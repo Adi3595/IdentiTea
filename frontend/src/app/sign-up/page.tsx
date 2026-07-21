@@ -94,12 +94,12 @@ export default function SignUpPage() {
         <motion.div animate={{ y: [0, 25, 0], x: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 18, ease: "easeInOut", delay: 1.5 }} className="absolute top-[5%] left-[40%] w-8 h-8 rounded-full shadow-[0_2px_10px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[380px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
+      <div className="relative z-10 w-full max-w-[420px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
         <Link href="/" className="inline-flex items-center gap-2 mb-4 font-bold tracking-widest uppercase hover:underline underline-offset-4 text-sm">
-          <ArrowLeft className="h-4 w-4" /> Back to Home
+          <ArrowLeft className="h-5 w-5" /> Back to Home
         </Link>
         
-        <div className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 md:p-8 min-h-[460px] flex flex-col justify-center relative">
+        <div className="bg-background border-4 border-foreground shadow-[10px_10px_0_var(--foreground)] p-8 md:p-10 min-h-[520px] flex flex-col justify-center relative">
           
           <AnimatePresence mode="wait">
             {!pendingVerification && (
@@ -109,77 +109,77 @@ export default function SignUpPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="w-full absolute inset-0 p-6 md:p-8 flex flex-col justify-center"
+                className="w-full absolute inset-0 p-8 md:p-10 flex flex-col justify-center"
               >
-                <div className="mb-6 text-center mt-4">
-                  <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-3xl mb-1 text-foreground">Sign Up</h1>
-                  <p className="text-muted-foreground text-[10px] font-medium tracking-wide">Generate your identity vault.</p>
+                <div className="mb-8 text-center mt-4">
+                  <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-3xl mb-2 text-foreground">Sign Up</h1>
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide">Generate your identity vault.</p>
                 </div>
 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-4 mb-8">
                   <Button 
                     type="button" 
                     onClick={() => handleOAuth("oauth_google")}
-                    className="w-full h-10 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
+                    className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
                   >
-                    <Globe className="h-4 w-4" /> Google
+                    <Globe className="h-5 w-5" /> Google
                   </Button>
                   <Button 
                     type="button" 
                     onClick={() => handleOAuth("oauth_github")}
-                    className="w-full h-10 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
+                    className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
                   >
-                    <Terminal className="h-4 w-4" /> GitHub
+                    <Terminal className="h-5 w-5" /> GitHub
                   </Button>
                 </div>
 
-                <div className="relative flex items-center py-2 mb-6">
+                <div className="relative flex items-center py-2 mb-8">
                   <div className="flex-grow border-t-2 border-border"></div>
-                  <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-[10px] uppercase tracking-widest">or</span>
+                  <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-xs uppercase tracking-widest">or</span>
                   <div className="flex-grow border-t-2 border-border"></div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-5">
                   {error && (
-                    <div className="bg-destructive/10 border-l-4 border-destructive p-2 text-destructive font-mono text-[10px] uppercase font-bold leading-tight">
+                    <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold leading-tight">
                       Error: {error}
                     </div>
                   )}
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="email" className="uppercase font-bold tracking-widest text-[10px]">Email Address</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="uppercase font-bold tracking-widest text-xs">Email Address</Label>
                     <Input 
                       id="email" 
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-10 bg-background font-mono text-sm"
+                      className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono text-sm"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="password" className="uppercase font-bold tracking-widest text-[10px]">Password</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="uppercase font-bold tracking-widest text-xs">Password</Label>
                     <Input 
                       id="password" 
                       type="password" 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-10 bg-background font-mono text-sm"
+                      className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono text-sm"
                     />
                   </div>
 
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full h-10 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-2 text-xs"
+                    className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4 text-xs"
                   >
                     {loading ? "Initializing..." : "Create Account"}
                   </Button>
                 </form>
 
-                <div className="mt-6 text-center text-xs font-medium text-muted-foreground">
+                <div className="mt-8 text-center text-xs font-medium text-muted-foreground">
                   Already exist? <Link href="/sign-in" className="text-foreground font-bold hover:underline underline-offset-4">Log In.</Link>
                 </div>
               </motion.div>
@@ -192,25 +192,25 @@ export default function SignUpPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="w-full absolute inset-0 p-6 md:p-8 flex flex-col justify-center"
+                className="w-full absolute inset-0 p-8 md:p-10 flex flex-col justify-center"
               >
-                <div className="mb-6 text-center flex flex-col items-center">
-                  <KeyRound className="h-8 w-8 text-foreground mb-4" />
-                  <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-2xl mb-2 text-foreground leading-tight">Verify</h1>
-                  <p className="text-muted-foreground text-[10px] font-medium tracking-wide px-2 leading-relaxed">
-                    Code sent to <span className="font-bold text-foreground block truncate max-w-[200px] mx-auto mt-1">{email}</span>
+                <div className="mb-8 text-center flex flex-col items-center">
+                  <KeyRound className="h-10 w-10 text-foreground mb-4" />
+                  <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-3xl mb-2 text-foreground leading-tight">Verify</h1>
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide px-2 leading-relaxed">
+                    Code sent to <span className="font-bold text-foreground block truncate max-w-[200px] mx-auto mt-2">{email}</span>
                   </p>
                 </div>
 
-                <form onSubmit={handleVerify} className="space-y-4">
+                <form onSubmit={handleVerify} className="space-y-5">
                   {error && (
-                    <div className="bg-destructive/10 border-l-4 border-destructive p-2 text-destructive font-mono text-[10px] uppercase font-bold leading-tight">
+                    <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold leading-tight">
                       Error: {error}
                     </div>
                   )}
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="code" className="uppercase font-bold tracking-widest text-[10px]">Auth Code</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="code" className="uppercase font-bold tracking-widest text-xs">Auth Code</Label>
                     <Input 
                       id="code" 
                       type="text" 
@@ -218,14 +218,14 @@ export default function SignUpPage() {
                       onChange={(e) => setCode(e.target.value)}
                       required
                       placeholder="123456"
-                      className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono text-center text-lg tracking-[0.3em]"
+                      className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-14 bg-background font-mono text-center text-2xl tracking-[0.3em]"
                     />
                   </div>
 
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full h-10 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4 text-xs"
+                    className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-6 text-xs"
                   >
                     {loading ? "Verifying..." : "Confirm"}
                   </Button>
@@ -233,7 +233,7 @@ export default function SignUpPage() {
                   <button 
                     type="button"
                     onClick={() => setPendingVerification(false)}
-                    className="w-full text-center mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:underline underline-offset-4"
+                    className="w-full text-center mt-6 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:underline underline-offset-4"
                   >
                     Back to Setup
                   </button>
