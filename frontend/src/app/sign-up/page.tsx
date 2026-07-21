@@ -3,7 +3,7 @@ import * as React from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Github, Chrome, KeyRound } from "lucide-react";
+import { ArrowLeft, Github, Globe, KeyRound } from "lucide-react";
 import { CustomCursor } from "@/components/cursor";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -121,7 +121,7 @@ export default function SignUpPage() {
                     onClick={() => handleOAuth("oauth_google")}
                     className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
                   >
-                    <Chrome className="h-5 w-5" /> Continue with Google
+                    <Globe className="h-5 w-5" /> Continue with Google
                   </Button>
                   <Button 
                     type="button" 
