@@ -46,12 +46,9 @@ export default function SignInPage() {
         await setActive({ session: result.createdSessionId });
         router.push("/build");
       } else {
-        // Required MFA or other steps
-        console.log(result);
         setError("Multi-factor authentication is not currently supported in this UI.");
       }
     } catch (err: any) {
-      console.error("error", err.errors[0]?.longMessage);
       setError(err.errors[0]?.longMessage || "An error occurred during sign in.");
     } finally {
       setLoading(false);
@@ -59,7 +56,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center px-4 relative overflow-hidden py-20">
+    <div className="h-screen w-full bg-background text-foreground flex flex-col justify-center items-center px-4 relative overflow-hidden">
       <CustomCursor />
       
       {/* Background aesthetics */}
@@ -67,87 +64,90 @@ export default function SignInPage() {
       
       {/* Floating Spheres Effect */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div animate={{ y: [0, -30, 0], x: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 15, ease: "easeInOut" }} className="absolute bottom-[-5%] right-[-5%] w-64 h-64 rounded-full shadow-[0_8px_30px_rgba(15,11,10,0.4)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
-        <motion.div animate={{ y: [0, 20, 0], x: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 10, ease: "easeInOut", delay: 1 }} className="absolute top-[10%] right-[20%] w-12 h-12 rounded-full shadow-[0_4px_15px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
+        <motion.div animate={{ y: [0, -30, 0], x: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 15, ease: "easeInOut" }} className="absolute bottom-[-5%] right-[-5%] w-56 h-56 rounded-full shadow-[0_8px_30px_rgba(15,11,10,0.4)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
+        <motion.div animate={{ y: [0, 20, 0], x: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 10, ease: "easeInOut", delay: 1 }} className="absolute top-[15%] right-[15%] w-16 h-16 rounded-full shadow-[0_4px_15px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
+        <motion.div animate={{ y: [0, 10, 0], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 12, ease: "easeInOut", delay: 0.5 }} className="absolute top-[30%] left-[5%] w-24 h-24 rounded-full shadow-[0_2px_8px_rgba(15,11,10,0.2)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
+        <motion.div animate={{ y: [0, -15, 0], x: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 8, ease: "easeInOut", delay: 2 }} className="absolute bottom-[20%] left-[20%] w-10 h-10 rounded-full shadow-[0_2px_10px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
+        <motion.div animate={{ y: [0, 25, 0], x: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 18, ease: "easeInOut", delay: 1.5 }} className="absolute top-[5%] left-[40%] w-8 h-8 rounded-full shadow-[0_2px_10px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[450px]">
-        <Link href="/" className="inline-flex items-center gap-2 mb-8 font-bold tracking-widest uppercase hover:underline underline-offset-4">
-          <ArrowLeft className="h-5 w-5" /> Back to Home
+      <div className="relative z-10 w-full max-w-[380px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
+        <Link href="/" className="inline-flex items-center gap-2 mb-4 font-bold tracking-widest uppercase hover:underline underline-offset-4 text-sm">
+          <ArrowLeft className="h-4 w-4" /> Back to Home
         </Link>
         
-        <div className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-8 md:p-10">
+        <div className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 md:p-8">
           
-          <div className="mb-8 text-center">
-            <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-4xl mb-2 text-foreground">Sign In</h1>
-            <p className="text-muted-foreground text-sm font-medium tracking-wide">Enter the grid and access your Knowledge Graph.</p>
+          <div className="mb-6 text-center">
+            <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-3xl mb-1 text-foreground">Sign In</h1>
+            <p className="text-muted-foreground text-xs font-medium tracking-wide">Access your Knowledge Graph.</p>
           </div>
 
-          <div className="space-y-4 mb-8">
+          <div className="space-y-3 mb-6">
             <Button 
               type="button" 
               onClick={() => handleOAuth("oauth_google")}
-              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
+              className="w-full h-10 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
             >
-              <Globe className="h-5 w-5" /> Continue with Google
+              <Globe className="h-4 w-4" /> Google
             </Button>
             <Button 
               type="button" 
               onClick={() => handleOAuth("oauth_github")}
-              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
+              className="w-full h-10 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
             >
-              <Terminal className="h-5 w-5" /> Continue with GitHub
+              <Terminal className="h-4 w-4" /> GitHub
             </Button>
           </div>
 
-          <div className="relative flex items-center py-2 mb-8">
+          <div className="relative flex items-center py-2 mb-6">
             <div className="flex-grow border-t-2 border-border"></div>
-            <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-xs uppercase tracking-widest">or</span>
+            <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-[10px] uppercase tracking-widest">or</span>
             <div className="flex-grow border-t-2 border-border"></div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold">
+              <div className="bg-destructive/10 border-l-4 border-destructive p-2 text-destructive font-mono text-[10px] uppercase font-bold leading-tight">
                 Error: {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="uppercase font-bold tracking-widest text-xs">Email Address</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="uppercase font-bold tracking-widest text-[10px]">Email Address</Label>
               <Input 
                 id="email" 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono"
+                className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-10 bg-background font-mono text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="uppercase font-bold tracking-widest text-xs">Password</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="uppercase font-bold tracking-widest text-[10px]">Password</Label>
               <Input 
                 id="password" 
                 type="password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono"
+                className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-10 bg-background font-mono text-sm"
               />
             </div>
 
             <Button 
               type="submit" 
               disabled={loading}
-              className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4"
+              className="w-full h-10 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-2 text-xs"
             >
               {loading ? "Authenticating..." : "Sign In"}
             </Button>
           </form>
 
-          <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
-            No account yet? <Link href="/sign-up" className="text-foreground font-bold hover:underline underline-offset-4">Sign Up Here.</Link>
+          <div className="mt-6 text-center text-xs font-medium text-muted-foreground">
+            No account yet? <Link href="/sign-up" className="text-foreground font-bold hover:underline underline-offset-4">Sign Up.</Link>
           </div>
         </div>
       </div>
