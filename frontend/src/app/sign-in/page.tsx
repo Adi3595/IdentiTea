@@ -59,7 +59,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center px-4 relative overflow-hidden py-20">
+    <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center px-4 relative overflow-hidden py-8">
       <CustomCursor />
       
       {/* Background aesthetics */}
@@ -75,7 +75,7 @@ export default function SignInPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-[450px]">
-        <Link href="/" className="inline-flex items-center gap-2 mb-8 font-bold tracking-widest uppercase hover:underline underline-offset-4">
+        <Link href="/" className="inline-flex items-center gap-2 mb-4 font-bold tracking-widest uppercase hover:underline underline-offset-4">
           <ArrowLeft className="h-5 w-5" /> Back to Home
         </Link>
         
