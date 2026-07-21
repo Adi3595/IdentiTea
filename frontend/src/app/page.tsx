@@ -41,8 +41,8 @@ export default function LandingPage() {
           </Link>
           <nav className="hidden md:flex gap-8 text-sm font-semibold text-muted-foreground">
             <Link href="#problem" className="hover:text-foreground transition-colors">The Problem</Link>
+            <Link href="#usecases" className="hover:text-foreground transition-colors">Use Cases</Link>
             <Link href="#engine" className="hover:text-foreground transition-colors">Evidence Engine</Link>
-            <Link href="#timeline" className="hover:text-foreground transition-colors">How it Works</Link>
           </nav>
           <div className="flex gap-4">
             <Link href="/sign-in">
@@ -231,7 +231,7 @@ export default function LandingPage() {
         </section>
 
         {/* 4. Use Cases (Typographic Tabs on Strict Grid) */}
-        <section className="pt-10 pb-12 bg-background border-b-4 border-foreground">
+        <section id="usecases" className="pt-10 pb-12 bg-background border-b-4 border-foreground">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
             {/* Left Column: Heading + Tabs (Spans 5 cols) */}
@@ -293,9 +293,25 @@ export default function LandingPage() {
               className="md:col-span-5"
             >
               <h2 className="text-5xl font-[family-name:var(--font-black-ops)] tracking-tight mb-8 leading-[1.1] -ml-1 md:-ml-2 lg:-ml-3">The Evidence <br/>Engine.</h2>
-              <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+              <p className="text-xl text-muted-foreground leading-relaxed mb-12">
                 How IdentiTea transforms a static resume into a verified, living graph without relying on black-box AI.
               </p>
+              
+              {/* Brutalist Data Terminal filling the empty space */}
+              <div className="border-4 border-foreground bg-foreground p-6 shadow-[8px_8px_0_rgba(15,11,10,0.15)] transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="flex items-center gap-2 mb-4 pb-4 border-b border-background/20">
+                  <TerminalSquare className="text-background h-5 w-5" />
+                  <span className="text-background font-mono text-sm uppercase tracking-widest font-bold">Extraction.log</span>
+                </div>
+                <pre className="text-background/90 font-mono text-sm leading-relaxed overflow-x-hidden">
+                  <span className="text-primary-foreground/50">01</span> <span className="text-green-400">MERGE</span> (u:User)<br/>
+                  <span className="text-primary-foreground/50">02</span> <span className="text-green-400">MERGE</span> (s:Skill {{`{`}name: 'Python'{`}`}})<br/>
+                  <span className="text-primary-foreground/50">03</span> <span className="text-green-400">MERGE</span> (u)-[r:HAS_SKILL]-&gt;(s)<br/>
+                  <span className="text-primary-foreground/50">04</span> <span className="text-blue-300">SET</span> r.confidence = 0.98<br/>
+                  <span className="text-primary-foreground/50">05</span> <br/>
+                  <span className="text-primary-foreground/50">06</span> <span className="text-yellow-400">&gt; SUCCESS: Node generated from PDF</span>
+                </pre>
+              </div>
             </motion.div>
             
             <div className="md:col-span-5 md:col-start-8 flex flex-col">
@@ -420,18 +436,18 @@ export default function LandingPage() {
           <div className="md:col-span-2 md:col-start-7">
             <h4 className="font-bold mb-8 text-xs uppercase tracking-widest text-foreground">Platform</h4>
             <ul className="space-y-6 text-sm text-muted-foreground font-medium">
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Evidence Engine</Link></li>
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Knowledge Graph</Link></li>
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Identity Score</Link></li>
+              <li><Link href="#engine" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Evidence Engine</Link></li>
+              <li><Link href="#problem" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">The Problem</Link></li>
+              <li><Link href="#usecases" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Use Cases</Link></li>
             </ul>
           </div>
           
           <div className="md:col-span-2">
             <h4 className="font-bold mb-8 text-xs uppercase tracking-widest text-foreground">Company</h4>
             <ul className="space-y-6 text-sm text-muted-foreground font-medium">
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">About Us</Link></li>
+              <li><Link href="https://github.com/Adi3595/IdentiTea" target="_blank" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">About Us</Link></li>
               <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Careers</Link></li>
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Contact</Link></li>
+              <li><Link href="mailto:hello@identitea.com" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Contact</Link></li>
             </ul>
           </div>
           
@@ -439,7 +455,7 @@ export default function LandingPage() {
             <h4 className="font-bold mb-8 text-xs uppercase tracking-widest text-foreground">Social</h4>
             <ul className="space-y-6 text-sm text-muted-foreground font-medium">
               <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Twitter / X</Link></li>
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">GitHub</Link></li>
+              <li><Link href="https://github.com/Adi3595/IdentiTea" target="_blank" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">GitHub</Link></li>
               <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Privacy</Link></li>
             </ul>
           </div>
