@@ -167,7 +167,7 @@ export default function LandingPage() {
         </section>
 
         {/* 3. Chaos vs Clarity - Pure Editorial Split */}
-        <section id="problem" className="pt-10 pb-12 bg-background border-b-4 border-foreground">
+        <section id="problem" className="scroll-mt-20 pt-10 pb-12 bg-background border-b-4 border-foreground">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-12 mb-16 text-center">
               <h2 className="text-sm font-bold tracking-widest uppercase text-foreground mb-4">The Problem & The Solution</h2>
@@ -231,7 +231,7 @@ export default function LandingPage() {
         </section>
 
         {/* 4. Use Cases (Typographic Tabs on Strict Grid) */}
-        <section id="usecases" className="pt-10 pb-12 bg-background border-b-4 border-foreground">
+        <section id="usecases" className="scroll-mt-20 pt-10 pb-12 bg-background border-b-4 border-foreground">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
             {/* Left Column: Heading + Tabs (Spans 5 cols) */}
@@ -283,7 +283,7 @@ export default function LandingPage() {
         </section>
 
         {/* 5. Evidence Engine - Text & Answer Format */}
-        <section id="engine" className="pt-10 pb-12 bg-background border-b-4 border-foreground">
+        <section id="engine" className="scroll-mt-20 pt-10 pb-12 bg-background border-b-4 border-foreground">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
@@ -305,7 +305,7 @@ export default function LandingPage() {
                 </div>
                 <pre className="text-background/90 font-mono text-sm leading-relaxed overflow-x-hidden">
                   <span className="text-primary-foreground/50">01</span> <span className="text-green-400">MERGE</span> (u:User)<br/>
-                  <span className="text-primary-foreground/50">02</span> <span className="text-green-400">MERGE</span> (s:Skill {{`{`}name: 'Python'{`}`}})<br/>
+                  <span className="text-primary-foreground/50">02</span> <span className="text-green-400">MERGE</span> (s:Skill {"{"}name: 'Python'{"}"})<br/>
                   <span className="text-primary-foreground/50">03</span> <span className="text-green-400">MERGE</span> (u)-[r:HAS_SKILL]-&gt;(s)<br/>
                   <span className="text-primary-foreground/50">04</span> <span className="text-blue-300">SET</span> r.confidence = 0.98<br/>
                   <span className="text-primary-foreground/50">05</span> <br/>
@@ -445,8 +445,8 @@ export default function LandingPage() {
           <div className="md:col-span-2">
             <h4 className="font-bold mb-8 text-xs uppercase tracking-widest text-foreground">Company</h4>
             <ul className="space-y-6 text-sm text-muted-foreground font-medium">
-              <li><Link href="https://github.com/Adi3595/IdentiTea" target="_blank" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">About Us</Link></li>
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Careers</Link></li>
+              <li><Link href="/about" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">About Us</Link></li>
+              <li><Link href="/careers" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Careers</Link></li>
               <li><Link href="mailto:hello@identitea.com" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Contact</Link></li>
             </ul>
           </div>
@@ -456,7 +456,7 @@ export default function LandingPage() {
             <ul className="space-y-6 text-sm text-muted-foreground font-medium">
               <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Twitter / X</Link></li>
               <li><Link href="https://github.com/Adi3595/IdentiTea" target="_blank" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">GitHub</Link></li>
-              <li><Link href="#" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Privacy</Link></li>
+              <li><Link href="/privacy" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Privacy</Link></li>
             </ul>
           </div>
         </div>
