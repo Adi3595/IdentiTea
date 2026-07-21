@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Terminal, Mail, Globe } from "lucide-react";
 import { CustomCursor } from "@/components/cursor";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -79,80 +79,88 @@ export default function SignInPage() {
           <ArrowLeft className="h-5 w-5" /> Back to Home
         </Link>
         
-        <div className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-8 md:p-10">
-          
-          <div className="mb-8 text-center">
-            <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-4xl mb-2 text-foreground">Sign In</h1>
-            <p className="text-muted-foreground text-sm font-medium tracking-wide">Enter the grid and access your Knowledge Graph.</p>
-          </div>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-8 md:p-10"
+          >
+            
+            <div className="mb-8 text-center">
+              <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-4xl mb-2 text-foreground">Sign In</h1>
+              <p className="text-muted-foreground text-sm font-medium tracking-wide">Enter the grid and access your Knowledge Graph.</p>
+            </div>
 
-          <div className="space-y-4 mb-8">
-            <Button 
-              type="button" 
-              onClick={() => handleOAuth("oauth_google")}
-              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
-            >
-              <Globe className="h-5 w-5" /> Continue with Google
-            </Button>
-            <Button 
-              type="button" 
-              onClick={() => handleOAuth("oauth_github")}
-              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
-            >
-              <Terminal className="h-5 w-5" /> Continue with GitHub
-            </Button>
-          </div>
+            <div className="space-y-4 mb-8">
+              <Button 
+                type="button" 
+                onClick={() => handleOAuth("oauth_google")}
+                className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
+              >
+                <Globe className="h-5 w-5" /> Continue with Google
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => handleOAuth("oauth_github")}
+                className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
+              >
+                <Terminal className="h-5 w-5" /> Continue with GitHub
+              </Button>
+            </div>
 
-          <div className="relative flex items-center py-2 mb-8">
-            <div className="flex-grow border-t-2 border-border"></div>
-            <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-xs uppercase tracking-widest">or</span>
-            <div className="flex-grow border-t-2 border-border"></div>
-          </div>
+            <div className="relative flex items-center py-2 mb-8">
+              <div className="flex-grow border-t-2 border-border"></div>
+              <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-xs uppercase tracking-widest">or</span>
+              <div className="flex-grow border-t-2 border-border"></div>
+            </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold">
-                Error: {error}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold leading-tight">
+                  Error: {error}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="uppercase font-bold tracking-widest text-xs">Email Address</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono text-sm"
+                />
               </div>
-            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="uppercase font-bold tracking-widest text-xs">Email Address</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono"
-              />
+              <div className="space-y-2">
+                <Label htmlFor="password" className="uppercase font-bold tracking-widest text-xs">Password</Label>
+                <Input 
+                  id="password" 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono text-sm"
+                />
+              </div>
+
+              <Button 
+                type="submit" 
+                disabled={loading}
+                className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4"
+              >
+                {loading ? "Authenticating..." : "Sign In"}
+              </Button>
+            </form>
+
+            <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
+              No account yet? <Link href="/sign-up" className="text-foreground font-bold hover:underline underline-offset-4">Sign Up.</Link>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="uppercase font-bold tracking-widest text-xs">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="rounded-none border-2 border-foreground focus-visible:ring-0 focus-visible:border-foreground h-12 bg-background font-mono"
-              />
-            </div>
-
-            <Button 
-              type="submit" 
-              disabled={loading}
-              className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4"
-            >
-              {loading ? "Authenticating..." : "Sign In"}
-            </Button>
-          </form>
-
-          <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
-            No account yet? <Link href="/sign-up" className="text-foreground font-bold hover:underline underline-offset-4">Sign Up Here.</Link>
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
