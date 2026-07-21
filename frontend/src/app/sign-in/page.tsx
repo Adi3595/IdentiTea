@@ -3,7 +3,7 @@ import * as React from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Github, Mail, Globe } from "lucide-react";
+import { ArrowLeft, Terminal, Mail, Globe } from "lucide-react";
 import { CustomCursor } from "@/components/cursor";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -96,7 +96,7 @@ export default function SignInPage() {
               onClick={() => handleOAuth("oauth_github")}
               className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-3"
             >
-              <Github className="h-5 w-5" /> Continue with GitHub
+              <Terminal className="h-5 w-5" /> Continue with GitHub
             </Button>
           </div>
 
