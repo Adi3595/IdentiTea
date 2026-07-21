@@ -94,9 +94,9 @@ export default function SignUpPage() {
         <motion.div animate={{ y: [0, 25, 0], x: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 18, ease: "easeInOut", delay: 1.5 }} className="absolute top-[5%] left-[40%] w-8 h-8 rounded-full shadow-[0_2px_10px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[550px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
+      <div className="relative z-10 w-full max-w-[450px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
         
-        <div className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-10 md:p-16 min-h-[600px] flex flex-col justify-center relative">
+        <div className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-8 md:p-12 min-h-[700px] flex flex-col justify-center relative">
           
           <AnimatePresence mode="wait">
             {!pendingVerification && (
@@ -106,18 +106,18 @@ export default function SignUpPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="w-full absolute inset-0 p-10 md:p-16 flex flex-col justify-center"
+                className="w-full absolute inset-0 p-8 md:p-12 flex flex-col justify-center"
               >
-                <Link href="/" className="inline-flex items-center gap-2 mb-6 font-bold tracking-widest uppercase hover:underline underline-offset-4 text-xs w-fit">
+                <Link href="/" className="inline-flex items-center gap-2 mb-8 font-bold tracking-widest uppercase hover:underline underline-offset-4 text-xs w-fit">
                   <ArrowLeft className="h-4 w-4" /> Back to Home
                 </Link>
 
-                <div className="mb-8 text-center mt-2">
-                  <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-4xl mb-2 text-foreground">Sign Up</h1>
+                <div className="mb-10 text-center mt-2">
+                  <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-4xl mb-3 text-foreground">Sign Up</h1>
                   <p className="text-muted-foreground text-sm font-medium tracking-wide">Generate your identity vault.</p>
                 </div>
 
-                <div className="space-y-4 mb-8">
+                <div className="space-y-4 mb-10">
                   <Button 
                     type="button" 
                     onClick={() => handleOAuth("oauth_google")}
@@ -134,13 +134,13 @@ export default function SignUpPage() {
                   </Button>
                 </div>
 
-                <div className="relative flex items-center py-2 mb-8">
+                <div className="relative flex items-center py-2 mb-10">
                   <div className="flex-grow border-t-2 border-border"></div>
                   <span className="flex-shrink-0 mx-4 text-muted-foreground font-mono text-xs uppercase tracking-widest">or</span>
                   <div className="flex-grow border-t-2 border-border"></div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   {error && (
                     <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold leading-tight">
                       Error: {error}
@@ -174,13 +174,13 @@ export default function SignUpPage() {
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4 text-xs md:text-sm"
+                    className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-6 text-xs md:text-sm"
                   >
                     {loading ? "Initializing..." : "Create Account"}
                   </Button>
                 </form>
 
-                <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
+                <div className="mt-auto pt-8 text-center text-sm font-medium text-muted-foreground">
                   Already exist? <Link href="/sign-in" className="text-foreground font-bold hover:underline underline-offset-4">Log In.</Link>
                 </div>
               </motion.div>
@@ -193,7 +193,7 @@ export default function SignUpPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="w-full absolute inset-0 p-10 md:p-16 flex flex-col justify-center"
+                className="w-full absolute inset-0 p-8 md:p-12 flex flex-col justify-center"
               >
                 <div className="mb-8 text-center flex flex-col items-center">
                   <KeyRound className="h-12 w-12 text-foreground mb-4" />
@@ -203,14 +203,14 @@ export default function SignUpPage() {
                   </p>
                 </div>
 
-                <form onSubmit={handleVerify} className="space-y-6">
+                <form onSubmit={handleVerify} className="space-y-8">
                   {error && (
                     <div className="bg-destructive/10 border-l-4 border-destructive p-3 text-destructive font-mono text-xs uppercase font-bold leading-tight">
                       Error: {error}
                     </div>
                   )}
 
-                  <div className="space-y-2">
+                  <div className="space-y-4">
                     <Label htmlFor="code" className="uppercase font-bold tracking-widest text-xs">Auth Code</Label>
                     <Input 
                       id="code" 
