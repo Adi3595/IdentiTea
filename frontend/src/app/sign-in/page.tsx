@@ -71,30 +71,31 @@ export default function SignInPage() {
         <motion.div animate={{ y: [0, 25, 0], x: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 18, ease: "easeInOut", delay: 1.5 }} className="absolute top-[5%] left-[40%] w-8 h-8 rounded-full shadow-[0_2px_10px_rgba(15,11,10,0.3)]" style={{ background: "radial-gradient(circle at 30% 30%, var(--background) 0%, var(--foreground) 50%)" }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[420px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
-        <Link href="/" className="inline-flex items-center gap-2 mb-4 font-bold tracking-widest uppercase hover:underline underline-offset-4 text-sm">
-          <ArrowLeft className="h-5 w-5" /> Back to Home
-        </Link>
+      <div className="relative z-10 w-full max-w-[480px] flex flex-col justify-center max-h-[100vh] overflow-y-auto no-scrollbar py-8">
         
-        <div className="bg-background border-4 border-foreground shadow-[10px_10px_0_var(--foreground)] p-8 md:p-10">
+        <div className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-8 md:p-12">
           
+          <Link href="/" className="inline-flex items-center gap-2 mb-6 font-bold tracking-widest uppercase hover:underline underline-offset-4 text-xs">
+            <ArrowLeft className="h-4 w-4" /> Back to Home
+          </Link>
+
           <div className="mb-8 text-center">
-            <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-3xl mb-2 text-foreground">Sign In</h1>
-            <p className="text-muted-foreground text-xs font-medium tracking-wide">Access your Knowledge Graph.</p>
+            <h1 className="font-[family-name:var(--font-black-ops)] uppercase tracking-tighter text-4xl mb-2 text-foreground">Sign In</h1>
+            <p className="text-muted-foreground text-sm font-medium tracking-wide">Access your Knowledge Graph.</p>
           </div>
 
           <div className="space-y-4 mb-8">
             <Button 
               type="button" 
               onClick={() => handleOAuth("oauth_google")}
-              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
+              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
             >
               <Globe className="h-5 w-5" /> Google
             </Button>
             <Button 
               type="button" 
               onClick={() => handleOAuth("oauth_github")}
-              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs"
+              className="w-full h-12 bg-background text-foreground border-2 border-foreground hover:bg-foreground/5 rounded-none font-bold uppercase tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
             >
               <Terminal className="h-5 w-5" /> GitHub
             </Button>
@@ -140,13 +141,13 @@ export default function SignInPage() {
             <Button 
               type="submit" 
               disabled={loading}
-              className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4 text-xs"
+              className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 rounded-none uppercase font-bold tracking-widest shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--foreground)] transition-all mt-4 text-xs md:text-sm"
             >
               {loading ? "Authenticating..." : "Sign In"}
             </Button>
           </form>
 
-          <div className="mt-8 text-center text-xs font-medium text-muted-foreground">
+          <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
             No account yet? <Link href="/sign-up" className="text-foreground font-bold hover:underline underline-offset-4">Sign Up.</Link>
           </div>
         </div>
