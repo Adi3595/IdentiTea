@@ -447,7 +447,7 @@ export default function LandingPage() {
             <ul className="space-y-6 text-sm text-muted-foreground font-medium">
               <li><Link href="/about" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">About Us</Link></li>
               <li><Link href="/careers" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Careers</Link></li>
-              <li><Link href="mailto:hello@identitea.com" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Contact</Link></li>
+              <li><Link href="/contact" className="inline-block hover:text-foreground hover:underline underline-offset-4 hover:translate-x-1 transition-all duration-300">Contact</Link></li>
             </ul>
           </div>
           
