@@ -1,6 +1,10 @@
 <div align="center">
   <br />
-  <img src="frontend/public/logo.svg" alt="IdentiTea Logo" width="120" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="frontend/public/logo-light.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="frontend/public/logo.svg" />
+    <img src="frontend/public/logo.svg" alt="IdentiTea Logo" width="120" />
+  </picture>
   <br />
   <br />
   <picture>
