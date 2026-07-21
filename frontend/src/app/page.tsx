@@ -132,7 +132,7 @@ export default function LandingPage() {
                     show: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 1.4 } }
                   }}
                 >
-                  <Link href="/sign-up" className="shrink-0 block">
+                  <Link href="/build" className="shrink-0 block">
                     <Button className="rounded-none h-16 px-8 text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:bg-primary/90 transition-all group flex items-center gap-4">
                       Start Building <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
                     </Button>
@@ -407,7 +407,7 @@ export default function LandingPage() {
                 Join the beta today and transform your scattered files into a living, intelligent career identity.
               </p>
               
-              <Link href="/sign-up">
+              <Link href="/create">
                 <Button className="h-20 px-12 text-2xl font-[family-name:var(--font-black-ops)] bg-foreground text-background hover:bg-foreground/90 rounded-none transition-all shadow-[8px_8px_0_rgba(15,11,10,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0_rgba(15,11,10,1)] flex items-center gap-4">
                   Create Your Graph <ArrowUpRight className="h-8 w-8" />
                 </Button>
