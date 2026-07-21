@@ -3,7 +3,11 @@
   <img src="frontend/public/logo.svg" alt="IdentiTea Logo" width="120" />
   <br />
   <br />
-  <img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=72&pause=1000&color=0F0B0A&center=true&vCenter=true&width=800&height=100&lines=IDENTITEA;THE+LIVING+GRAPH" alt="IdentiTea" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=72&pause=1000&color=F8F9FA&center=true&vCenter=true&width=800&height=100&lines=IDENTITEA;THE+LIVING+GRAPH" />
+    <source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=72&pause=1000&color=0F0B0A&center=true&vCenter=true&width=800&height=100&lines=IDENTITEA;THE+LIVING+GRAPH" />
+    <img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=72&pause=1000&color=0F0B0A&center=true&vCenter=true&width=800&height=100&lines=IDENTITEA;THE+LIVING+GRAPH" alt="IdentiTea" />
+  </picture>
   <p>
     <strong>ESCAPE THE FOLDERS. ENTER THE LIVING GRAPH.</strong>
   </p>
@@ -15,13 +19,13 @@
 
 ---
 
-## <img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=THE+PROBLEM" alt="The Problem" />
+## <picture><source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=F8F9FA&vCenter=true&width=600&lines=THE+PROBLEM" /><source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=THE+PROBLEM" /><img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=THE+PROBLEM" alt="The Problem" /></picture>
 
 Your professional identity is fragmented. It lives across unnamed PDFs on your desktop, forgotten GitHub repositories, and static LinkedIn pages. 
 
 Worse, **unverifiable claims** plague the industry. Anyone can write "Python" on a resume. There is no cryptographic proof connecting that claim to actual work. You only update your resume when looking for a job, missing months of valuable micro-achievements.
 
-## <img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=EVIDENCE+ENGINE" alt="Evidence Engine" />
+## <picture><source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=F8F9FA&vCenter=true&width=600&lines=EVIDENCE+ENGINE" /><source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=EVIDENCE+ENGINE" /><img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=EVIDENCE+ENGINE" alt="Evidence Engine" /></picture>
 
 IdentiTea is not another PDF resume generator. It is a dynamic Knowledge Graph engine powered by advanced NLP parsing and Vector Embeddings.
 
@@ -29,7 +33,7 @@ IdentiTea is not another PDF resume generator. It is a dynamic Knowledge Graph e
 *   **CRYPTOGRAPHIC TRUTH**: Every extracted skill becomes a node in your graph. Edges are drawn linking that skill directly back to the exact paragraph in the source document, providing absolute truth to recruiters.
 *   **THE READINESS SCORE**: We generate vector embeddings of your entire graph and calculate cosine similarity against real job descriptions to provide an undeniable readiness score.
 
-## <img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=STRICT+BRUTALISM" alt="Strict Brutalism" />
+## <picture><source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=F8F9FA&vCenter=true&width=600&lines=STRICT+BRUTALISM" /><source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=STRICT+BRUTALISM" /><img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=STRICT+BRUTALISM" alt="Strict Brutalism" /></picture>
 
 We didn't build a typical dashboard. We built a premium, intelligent, calm, and futuristic experience.
 
@@ -40,7 +44,7 @@ We didn't build a typical dashboard. We built a premium, intelligent, calm, and 
 | **ARCHITECTURE** | Edge-to-Edge layout. Hard corners, solid 4px strokes, and aggressive drop shadows. No `border-radius`, no glassy blurs. |
 | **INTERACTIONS** | An inverted 100px custom cursor lens acting as a physical magnifying glass over your data. |
 
-## <img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=GETTING+STARTED" alt="Getting Started" />
+## <picture><source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=F8F9FA&vCenter=true&width=600&lines=GETTING+STARTED" /><source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=GETTING+STARTED" /><img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=GETTING+STARTED" alt="Getting Started" /></picture>
 
 To run IdentiTea locally, you'll need to boot up both the Next.js frontend and the Python backend.
 
