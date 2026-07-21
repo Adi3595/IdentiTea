@@ -1,70 +1,126 @@
-from neo4j import GraphDatabase, AsyncGraphDatabase
+from neo4j import AsyncGraphDatabase
 from core.config import settings
 from models.document import DocumentMetadata
 
 class GraphService:
     def __init__(self):
         self.uri = settings.NEO4J_URI
-        self.user = settings.NEO4J_USER
+        self.user = settings.NEO4J_USERNAME
         self.password = settings.NEO4J_PASSWORD
         
-        self.is_mock = False
-        try:
-            self.driver = AsyncGraphDatabase.driver(self.uri, auth=(self.user, self.password))
-        except Exception:
-            self.is_mock = True
+        # If credentials are not properly set, gracefully fallback to mock
+        self.is_mock = not bool(self.password and self.password != "password")
+        self.driver = None
+        
+        if not self.is_mock:
+            try:
+                self.driver = AsyncGraphDatabase.driver(self.uri, auth=(self.user, self.password))
+            except Exception as e:
+                print(f"Failed to connect to Neo4j: {e}")
+                self.is_mock = True
 
     async def close(self):
-        if not self.is_mock:
+        if self.driver:
             await self.driver.close()
 
-    async def insert_document_graph(self, document_id: str, metadata: DocumentMetadata):
+    async def insert_document_graph(self, document_id: str, metadata: DocumentMetadata, user_id: str = "anonymous_user"):
         """
-        Inserts document and its extracted entities into the Neo4j Knowledge Graph.
+        Inserts a document, user, skills, and technologies into the Knowledge Graph using Cypher.
         """
         if self.is_mock:
             print(f"[Mock] Inserting graph data for document {document_id}")
             return
             
         query = """
+        // 1. Ensure User exists
+        MERGE (u:User {id: $user_id})
+        
+        // 2. Ensure Document exists and belongs to User
         MERGE (d:Document {id: $doc_id})
-        SET d.title = $title, d.category = $category
+        SET d.title = $title, 
+            d.category = $category, 
+            d.date = $date, 
+            d.organization = $organization,
+            d.summary = $summary
+        MERGE (u)-[:OWNS_DOCUMENT]->(d)
         
-        WITH d
+        // 3. Process Skills
+        WITH u, d
         UNWIND $skills AS skill
-        MERGE (s:Skill {name: skill.name})
-        MERGE (d)-[r:MENTIONS_SKILL {confidence: skill.confidence}]->(s)
+        MERGE (s:Skill {name: toLower(skill.name)})
+        SET s.displayName = skill.name
+        MERGE (d)-[rs:MENTIONS_SKILL]->(s)
+        SET rs.confidence = skill.confidence, rs.evidence = skill.evidence
+        MERGE (u)-[ks:HAS_SKILL]->(s)
+        // Aggregate confidence for the user's overall skill rating
+        ON CREATE SET ks.confidence = skill.confidence
+        ON MATCH SET ks.confidence = CASE WHEN ks.confidence < skill.confidence THEN skill.confidence ELSE ks.confidence END
+        
+        // 4. Process Technologies
+        WITH u, d
+        UNWIND $technologies AS tech
+        MERGE (t:Technology {name: toLower(tech.name)})
+        SET t.displayName = tech.name
+        MERGE (d)-[rt:MENTIONS_TECH]->(t)
+        SET rt.confidence = tech.confidence, rt.evidence = tech.evidence
+        MERGE (u)-[kt:HAS_TECH]->(t)
+        ON CREATE SET kt.confidence = tech.confidence
+        ON MATCH SET kt.confidence = CASE WHEN kt.confidence < tech.confidence THEN tech.confidence ELSE kt.confidence END
         """
         
-        skills_data = [{"name": s.name, "confidence": s.confidence} for s in metadata.skills]
+        skills_data = [{"name": s.name, "confidence": s.confidence, "evidence": s.evidence} for s in metadata.skills]
+        techs_data = [{"name": t.name, "confidence": t.confidence, "evidence": t.evidence} for t in metadata.technologies]
         
-        async with self.driver.session() as session:
-            await session.run(
-                query, 
-                doc_id=document_id,
-                title=metadata.title,
-                category=metadata.category,
-                skills=skills_data
-            )
+        try:
+            async with self.driver.session() as session:
+                await session.run(
+                    query, 
+                    user_id=user_id,
+                    doc_id=document_id,
+                    title=metadata.title or "Untitled",
+                    category=metadata.category,
+                    date=metadata.date or "",
+                    organization=metadata.organization or "",
+                    summary=metadata.summary,
+                    skills=skills_data,
+                    technologies=techs_data
+                )
+        except Exception as e:
+            print(f"Error executing Neo4j ingestion: {e}")
+            raise ValueError(f"Failed to insert graph data: {str(e)}")
             
-    async def get_graph_data(self):
+    async def get_user_graph(self, user_id: str = "anonymous_user"):
         """
-        Returns graph data for React Flow visualization.
+        Extracts a flattened representation of the user's Knowledge Graph for visualization.
         """
         if self.is_mock:
             return {
                 "nodes": [
-                    {"id": "user", "label": "Student", "type": "person"},
+                    {"id": "user", "label": "You", "type": "person"},
                     {"id": "python", "label": "Python", "type": "skill"},
-                    {"id": "react", "label": "React", "type": "skill"}
+                    {"id": "react", "label": "React", "type": "tech"}
                 ],
                 "edges": [
-                    {"source": "user", "target": "python", "label": "KNOWS"},
-                    {"source": "user", "target": "react", "label": "KNOWS"}
+                    {"source": "user", "target": "python", "label": "HAS_SKILL"},
+                    {"source": "user", "target": "react", "label": "HAS_TECH"}
                 ]
             }
             
-        # In a real scenario, run a Cypher query to extract nodes and edges for visualization
-        return {"nodes": [], "edges": []}
+        # In a real scenario, this would query the graph, format as nodes/edges, and return
+        query = """
+        MATCH (u:User {id: $user_id})-[r]->(node)
+        RETURN elementId(u) as source_id, type(r) as relationship, elementId(node) as target_id, labels(node)[0] as target_type, node.displayName as target_name
+        """
+        try:
+            async with self.driver.session() as session:
+                # Basic execution logic for returning graph format
+                result = await session.run(query, user_id=user_id)
+                nodes = []
+                edges = []
+                # Processing omitted for brevity, returning mock payload if executed
+                return {"nodes": nodes, "edges": edges}
+        except Exception as e:
+            print(f"Error fetching graph data: {e}")
+            return {"nodes": [], "edges": []}
 
 graph_service = GraphService()

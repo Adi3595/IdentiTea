@@ -9,7 +9,6 @@ google-generativeai
 langchain
 langchain-google-genai
 llama-index
-# spacy
-# sentence-transformers
+PyMuPDF
 supabase
 python-multipart
