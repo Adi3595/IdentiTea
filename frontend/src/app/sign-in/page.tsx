@@ -156,7 +156,9 @@ export default function SignInPage() {
               </Button>
             </form>
 
-
+            <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
+              No account yet? <Link href="/sign-up" className="text-foreground font-bold hover:underline underline-offset-4">Sign Up.</Link>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
