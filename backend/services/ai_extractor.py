@@ -65,7 +65,7 @@ class AIExtractorService:
         
         try:
             # We enforce JSON output directly via the generation config
-            response = self.model.generate_content(
+            response = await self.model.generate_content_async(
                 prompt,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",

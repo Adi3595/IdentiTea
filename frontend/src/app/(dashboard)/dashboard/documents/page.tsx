@@ -62,7 +62,10 @@ export default function DocumentsPage() {
       // We bypass fetchWithAuth's default Content-Type so the browser sets the boundary correctly
       const token = await (await import("@/lib/firebase")).auth.currentUser?.getIdToken()
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"}/documents/upload`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const apiBaseUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+      
+      const response = await fetch(`${apiBaseUrl}/documents/upload`, {
         method: "POST",
         headers: {
           ...(token ? { "Authorization": `Bearer ${token}` } : {})
