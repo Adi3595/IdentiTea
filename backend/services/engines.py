@@ -1,8 +1,18 @@
 from services.graph import graph_service
 from services.postgres import db
 import logging
+import json
+import google.generativeai as genai
+from core.config import settings
 
 class IdentityEngine:
+    def __init__(self):
+        self.api_key = settings.GEMINI_API_KEY
+        self.is_mock = not bool(self.api_key)
+        if not self.is_mock:
+            genai.configure(api_key=self.api_key)
+            self.model = genai.GenerativeModel("gemini-1.5-pro")
+
     async def calculate_identity_score(self, user_id: str) -> dict:
         """
         Calculates the Identity Score based on verified skills, documents, and graph connections.
@@ -52,15 +62,37 @@ class IdentityEngine:
 
     async def generate_career_recommendations(self, user_id: str) -> list:
         """
-        Analyze current skills and projects to recommend career paths or next skills to learn.
+        Analyze current skills and projects to recommend career paths or next skills to learn via Gemini.
         """
-        # Placeholder for AI recommendation logic
-        # In a real scenario, this would query Neo4j for nodes similar to the user's graph,
-        # or ask Gemini for a personalized recommendation based on extracted skills.
-        return [
-            {"title": "Senior AI Engineer", "match": "85%", "missing_skills": ["Kubernetes", "MLOps"]},
-            {"title": "Full Stack Developer", "match": "95%", "missing_skills": ["GraphQL"]},
+        current_skills = await graph_service.get_user_skills(user_id)
+        skill_names = [s.get("name") for s in current_skills]
+        
+        if self.is_mock or not skill_names:
+            return [
+                {"title": "Senior AI Engineer", "match": "85%", "missing_skills": ["Kubernetes", "MLOps"]},
+                {"title": "Full Stack Developer", "match": "95%", "missing_skills": ["GraphQL"]},
+            ]
+            
+        prompt = f"""
+        The user has the following verified skills in their knowledge graph: {', '.join(skill_names)}.
+        Based exclusively on these skills, recommend 2 target career roles for them.
+        Respond ONLY with a valid JSON array matching this format:
+        [
+            {{"title": "Role Title", "match": "XX%", "missing_skills": ["Skill1", "Skill2"]}}
         ]
+        """
+        try:
+            response = self.model.generate_content(
+                prompt,
+                generation_config=genai.GenerationConfig(
+                    response_mime_type="application/json",
+                    temperature=0.7
+                )
+            )
+            return json.loads(response.text)
+        except Exception as e:
+            logging.error(f"Error generating recommendations: {e}")
+            return []
 
     async def generate_auto_portfolio(self, user_id: str) -> dict:
         """
@@ -92,37 +124,57 @@ class IdentityEngine:
 
     async def run_resume_gap_analysis(self, user_id: str, target_role: str) -> dict:
         """
-        Analyzes the user's current skills against a target role to find gaps.
+        Analyzes the user's current skills against a target role to find gaps via Gemini.
         """
-        # In a real engine, we'd query standard role requirements (e.g. from an ontology graph)
-        # and diff it against the user's `HAS_SKILL` edges.
         current_skills = await graph_service.get_user_skills(user_id)
-        skill_names = [s.get("name", "").lower() for s in current_skills]
+        skill_names = [s.get("name") for s in current_skills if s.get("name")]
         
-        target_requirements = ["python", "react", "graphql", "docker", "aws"]
-        missing = [req for req in target_requirements if req not in skill_names]
+        if self.is_mock or not skill_names:
+            target_requirements = ["python", "react", "graphql", "docker", "aws"]
+            missing = [req for req in target_requirements if req not in [s.lower() for s in skill_names]]
+            return {
+                "target_role": target_role,
+                "current_skills_mapped": len(skill_names),
+                "missing_skills": missing,
+                "readiness_score": int((len(target_requirements) - len(missing)) / len(target_requirements) * 100) if target_requirements else 0
+            }
+            
+        prompt = f"""
+        You are a career readiness AI.
+        The user wants to become a '{target_role}'.
+        Their current verified skills are: {', '.join(skill_names)}.
         
-        return {
-            "target_role": target_role,
-            "current_skills_mapped": len(skill_names),
-            "missing_skills": missing,
-            "readiness_score": int((len(target_requirements) - len(missing)) / len(target_requirements) * 100)
-        }
+        Determine standard industry requirements for '{target_role}'. 
+        Compare against their skills to identify missing skills.
+        Calculate a readiness score (0 to 100).
+        
+        Respond ONLY with a valid JSON object matching this exact schema:
+        {{
+            "target_role": "{target_role}",
+            "current_skills_mapped": {len(skill_names)},
+            "missing_skills": ["Skill1", "Skill2", "Skill3"],
+            "readiness_score": 75
+        }}
+        """
+        
+        try:
+            response = self.model.generate_content(
+                prompt,
+                generation_config=genai.GenerationConfig(
+                    response_mime_type="application/json",
+                    temperature=0.2
+                )
+            )
+            return json.loads(response.text)
+        except Exception as e:
+            logging.error(f"Error generating gap analysis: {e}")
+            return {"error": str(e)}
 
     async def run_relationship_inference(self, user_id: str) -> dict:
         """
-        Infers implicit skills based on project technologies.
-        (e.g., if a Project USES Next.js, the User likely HAS_SKILL React).
+        Infers implicit skills based on project technologies by running Cypher mutations.
         """
-        # A true relationship engine would execute a Cypher query like:
-        # MATCH (u:User)-[:OWNS_PROJECT]->(p:Project)-[:USES]->(t:Technology)
-        # MERGE (u)-[:HAS_SKILL {inferred: true}]->(t)
-        
-        # Here we simulate the engine output
-        return {
-            "inferred_skills_added": 3,
-            "examples": ["React (from Next.js)", "PostgreSQL (from Supabase)"],
-            "status": "Inference Complete"
-        }
+        result = await graph_service.infer_relationships(user_id)
+        return result
 
 identity_engine = IdentityEngine()

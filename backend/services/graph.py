@@ -92,6 +92,7 @@ class GraphService:
     async def get_user_graph(self, user_id: str = "anonymous_user"):
         """
         Extracts a flattened representation of the user's Knowledge Graph for visualization.
+        Fetches up to 2 hops away from the user.
         """
         if self.is_mock:
             return {
@@ -106,19 +107,45 @@ class GraphService:
                 ]
             }
             
-        # In a real scenario, this would query the graph, format as nodes/edges, and return
         query = """
-        MATCH (u:User {id: $user_id})-[r]->(node)
-        RETURN elementId(u) as source_id, type(r) as relationship, elementId(node) as target_id, labels(node)[0] as target_type, node.displayName as target_name
+        MATCH (u:User {id: $user_id})-[r1]->(n1)
+        OPTIONAL MATCH (n1)-[r2]->(n2)
+        RETURN 
+            elementId(u) as u_id,
+            elementId(n1) as n1_id, type(r1) as r1_type, labels(n1)[0] as n1_label, coalesce(n1.displayName, n1.title, n1.name, 'Node') as n1_name,
+            elementId(n2) as n2_id, type(r2) as r2_type, labels(n2)[0] as n2_label, coalesce(n2.displayName, n2.title, n2.name, 'Node') as n2_name
         """
         try:
             async with self.driver.session() as session:
-                # Basic execution logic for returning graph format
                 result = await session.run(query, user_id=user_id)
-                nodes = []
+                records = await result.data()
+                
+                nodes_dict = {
+                    user_id: {"id": user_id, "label": "You", "type": "User"}
+                }
+                edges_set = set()
                 edges = []
-                # Processing omitted for brevity, returning mock payload if executed
-                return {"nodes": nodes, "edges": edges}
+                
+                for r in records:
+                    # Process 1st hop
+                    n1_id = r.get("n1_id")
+                    if n1_id:
+                        nodes_dict[n1_id] = {"id": n1_id, "label": r.get("n1_name"), "type": r.get("n1_label")}
+                        edge1 = (user_id, n1_id, r.get("r1_type"))
+                        if edge1 not in edges_set:
+                            edges_set.add(edge1)
+                            edges.append({"source": user_id, "target": n1_id, "label": edge1[2]})
+                            
+                    # Process 2nd hop
+                    n2_id = r.get("n2_id")
+                    if n2_id:
+                        nodes_dict[n2_id] = {"id": n2_id, "label": r.get("n2_name"), "type": r.get("n2_label")}
+                        edge2 = (n1_id, n2_id, r.get("r2_type"))
+                        if edge2 not in edges_set:
+                            edges_set.add(edge2)
+                            edges.append({"source": n1_id, "target": n2_id, "label": edge2[2]})
+                            
+                return {"nodes": list(nodes_dict.values()), "edges": edges}
         except Exception as e:
             print(f"Error fetching graph data: {e}")
             return {"nodes": [], "edges": []}
@@ -127,15 +154,14 @@ class GraphService:
         if self.is_mock:
             return [{"id": "s1", "name": "Python", "confidence": 0.9, "category": "Language"}]
         query = """
-        MATCH (u:User {id: $user_id})-[r:HAS_SKILL]->(s:Skill)
-        RETURN elementId(s) as id, s.displayName as name, r.confidence as confidence
+        MATCH (u:User {id: $user_id})-[r:HAS_SKILL|HAS_TECH]->(s)
+        RETURN elementId(s) as id, coalesce(s.displayName, s.name) as name, coalesce(r.confidence, 1.0) as confidence
         ORDER BY r.confidence DESC
         """
         try:
             async with self.driver.session() as session:
                 result = await session.run(query, user_id=user_id)
-                records = await result.data()
-                return records
+                return await result.data()
         except Exception as e:
             print(f"Error fetching skills: {e}")
             return []
@@ -176,7 +202,7 @@ class GraphService:
         query = """
         MATCH (u:User {id: $user_id})-[:HAS_CERTIFICATE]->(c:Certificate)
         OPTIONAL MATCH (c)-[:VERIFIES]->(s:Skill)
-        RETURN elementId(c) as id, c.name as name, c.issuer as issuer, collect(s.displayName) as verified_skills
+        RETURN elementId(c) as id, coalesce(c.displayName, c.name) as name, c.issuer as issuer, collect(s.displayName) as verified_skills
         """
         try:
             async with self.driver.session() as session:
@@ -198,5 +224,31 @@ class GraphService:
                 return await result.data()
         except Exception as e:
             return []
+            
+    async def infer_relationships(self, user_id: str):
+        if self.is_mock:
+            return {"inferred_skills_added": 3, "examples": ["React", "PostgreSQL"]}
+            
+        # Example inference: If user owns a Document that mentions a skill/tech, 
+        # ensure the user HAS_SKILL or HAS_TECH.
+        query = """
+        MATCH (u:User {id: $user_id})-[:OWNS_DOCUMENT]->(d:Document)-[r:MENTIONS_SKILL|MENTIONS_TECH]->(t)
+        MERGE (u)-[new_r:HAS_SKILL]->(t)
+        ON CREATE SET new_r.confidence = r.confidence, new_r.inferred = true
+        RETURN t.displayName as inferred_skill
+        """
+        try:
+            async with self.driver.session() as session:
+                result = await session.run(query, user_id=user_id)
+                records = await result.data()
+                inferred = [r.get("inferred_skill") for r in records]
+                return {
+                    "inferred_skills_added": len(inferred),
+                    "examples": inferred[:5],
+                    "status": "Inference Complete"
+                }
+        except Exception as e:
+            print(f"Error inferring relationships: {e}")
+            return {"error": str(e)}
 
 graph_service = GraphService()
