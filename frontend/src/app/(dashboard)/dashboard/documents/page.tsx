@@ -93,7 +93,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-4xl text-foreground">
+    <div className="space-y-8 max-w-7xl mx-auto text-foreground">
       <CustomCursor />
       <div className="border-b-4 border-foreground pb-6">
         <div>
@@ -104,7 +104,7 @@ export default function DocumentsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         
         {/* Upload Zone */}
         <div className="space-y-6">
@@ -162,11 +162,9 @@ export default function DocumentsPage() {
           )}
         </div>
 
-        {/* Right Side: Results or Placeholder */}
-        <div className="space-y-6 flex flex-col h-full">
-          {/* Pipeline Terminal Logs */}
-          <div className="bg-foreground text-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 h-[250px] flex flex-col font-mono shrink-0">
-            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-background/20">
+        {/* Pipeline Terminal Logs */}
+        <div className="bg-foreground text-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 h-[400px] flex flex-col font-mono">
+          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-background/20">
               <Terminal className="h-5 w-5" />
               <h2 className="uppercase tracking-widest font-bold text-sm">Extraction Pipeline</h2>
             </div>
@@ -187,9 +185,10 @@ export default function DocumentsPage() {
               </AnimatePresence>
             </div>
           </div>
+        </div>
 
-          {/* Structured Output Display */}
-          <div className="flex-1 min-h-[300px]">
+        {/* Structured Output Display */}
+        <div className="h-[400px]">
             {result && result.metadata ? (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
@@ -233,7 +232,6 @@ export default function DocumentsPage() {
               </div>
             )}
           </div>
-        </div>
       </div>
     </div>
   )
