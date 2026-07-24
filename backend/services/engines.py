@@ -99,22 +99,18 @@ class IdentityEngine:
         Synthesizes a public-facing portfolio structure from timeline and graph.
         """
         try:
-            graph_data = await graph_service.get_user_graph(user_id=user_id)
-            nodes = graph_data.get("nodes", [])
-            
-            # Filter distinct project and skill nodes
-            skills = [n for n in nodes if n.get("label") == "Skill"]
-            projects = [n for n in nodes if n.get("label") == "Project"]
-            certs = [n for n in nodes if n.get("label") == "Certification"]
+            skills = await graph_service.get_user_skills(user_id=user_id)
+            projects = await graph_service.get_user_projects(user_id=user_id)
+            certs = await graph_service.get_user_certificates(user_id=user_id)
             
             # Formulate the portfolio view
             return {
                 "tagline": "Dynamic Knowledge Worker",
-                "highlight_projects": projects[:3],
-                "core_skills": skills[:5],
-                "certifications": certs,
+                "highlight_projects": projects[:3] if projects else [],
+                "core_skills": skills[:10] if skills else [],
+                "certifications": certs if certs else [],
                 "seo_meta": {
-                    "title": f"Portfolio | {len(skills)} Skills",
+                    "title": f"Portfolio | {len(skills) if skills else 0} Skills",
                     "description": "Auto-generated knowledge graph portfolio."
                 }
             }

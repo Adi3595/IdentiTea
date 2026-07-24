@@ -218,8 +218,9 @@ class GraphService:
         if self.is_mock:
             return []
         query = """
-        MATCH (u:User {id: $user_id})-[:HAS_ACHIEVEMENT]->(a:Achievement)
-        RETURN elementId(a) as id, a.title as title, a.event as event, a.description as description
+        MATCH (u:User {id: $user_id})-[:OWNS_DOCUMENT]->(a:Document)
+        WHERE a.category IN ['Certificate', 'Certification', 'Achievement', 'Award']
+        RETURN elementId(a) as id, coalesce(a.title, 'Unnamed Achievement') as title, coalesce(a.organization, '') as event, coalesce(a.summary, '') as description
         """
         try:
             async with self.driver.session() as session:
