@@ -19,14 +19,14 @@ export default function IntegrationsPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleConnect = async (id: string) => {
-    if (id === "github") {
-      if (showInputFor !== "github") {
-        setShowInputFor("github");
+    if (id === "github" || id === "linkedin") {
+      if (showInputFor !== id) {
+        setShowInputFor(id);
         return;
       }
       
       if (!usernameInput) {
-        setErrorMsg("Please enter a username");
+        setErrorMsg(id === "github" ? "Please enter a username" : "Please enter a profile URL");
         return;
       }
       
@@ -34,17 +34,18 @@ export default function IntegrationsPage() {
       setErrorMsg("");
       
       try {
-        await fetchWithAuth("/integrations/github", {
+        await fetchWithAuth(`/integrations/${id}`, {
           method: "POST",
-          body: JSON.stringify({ username: usernameInput })
+          body: JSON.stringify({ [id === "github" ? "username" : "url"]: usernameInput })
         });
         
         setIntegrations(prev => prev.map(int => 
           int.id === id ? { ...int, status: "Connected" } : int
         ));
         setShowInputFor(null);
+        setUsernameInput("");
       } catch (err: any) {
-        setErrorMsg(err.message || "Failed to sync GitHub");
+        setErrorMsg(err.message || `Failed to sync ${id}`);
       } finally {
         setConnectingId(null);
       }
@@ -101,7 +102,7 @@ export default function IntegrationsPage() {
               {showInput && (
                 <div className="mb-4">
                   <Input 
-                    placeholder="Enter GitHub Username" 
+                    placeholder={showInputFor === "github" ? "Enter GitHub Username" : "Enter LinkedIn Profile URL"} 
                     value={usernameInput}
                     onChange={(e) => setUsernameInput(e.target.value)}
                     className="border-2 border-foreground rounded-none font-mono text-sm"
