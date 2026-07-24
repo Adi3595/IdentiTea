@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { UploadCloud, Terminal, FileText, CheckCircle2, XCircle } from "lucide-react"
+import { UploadCloud, Terminal, FileText, CheckCircle2, XCircle, BrainCircuit } from "lucide-react"
 import { fetchWithAuth } from "@/lib/api"
 import { CustomCursor } from "@/components/cursor"
 import { Button } from "@/components/ui/button"
