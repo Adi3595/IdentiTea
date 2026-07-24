@@ -9,3 +9,7 @@ backend/venv/
 backend/venv_win/
 __pycache__/
 *.pyc
+
+# Service Account Keys
+*-firebase-adminsdk-*.json
+service-account*.json
