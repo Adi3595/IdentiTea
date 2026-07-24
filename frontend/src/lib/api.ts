@@ -1,7 +1,7 @@
 import { auth } from "./firebase";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`;
 export async function fetchWithAuth(endpoint: string, options: RequestInit = {}, retryCount = 0): Promise<any> {
   // Try to get the current user's token
   let token = null;
