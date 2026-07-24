@@ -185,7 +185,6 @@ export default function DocumentsPage() {
               </AnimatePresence>
             </div>
           </div>
-        </div>
 
         {/* Structured Output Display */}
         <div className="h-[400px]">
