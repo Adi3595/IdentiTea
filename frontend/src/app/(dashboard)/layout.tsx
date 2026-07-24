@@ -15,12 +15,6 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && !user && pathname !== '/dashboard') {
-      router.push('/sign-in');
-    }
-  }, [user, loading, pathname, router]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col justify-center items-center">
@@ -30,11 +24,6 @@ export default function DashboardLayout({
         </div>
       </div>
     );
-  }
-
-  // If not logged in and not on the main dashboard, don't render children to avoid flash/errors
-  if (!user && pathname !== '/dashboard') {
-    return null;
   }
 
   return (
