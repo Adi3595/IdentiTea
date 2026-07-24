@@ -162,7 +162,7 @@ export default function DocumentsPage() {
             <h2 className="uppercase tracking-widest font-bold text-sm">Extraction Pipeline</h2>
           </div>
           
-          <div className="flex-1 overflow-y-auto space-y-2 text-xs">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-2 text-xs break-words whitespace-pre-wrap">
             {logs.length === 0 && <p className="text-background/50">Awaiting input...</p>}
             <AnimatePresence>
               {logs.map((log, i) => (

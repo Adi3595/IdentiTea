@@ -45,12 +45,12 @@ export default function LandingPage() {
             <Link href="#engine" className="hover:text-foreground transition-colors">Evidence Engine</Link>
             <Link href="#security" className="hover:text-foreground transition-colors">Security Vault</Link>
           </nav>
-          <div className="flex gap-4">
-            <Link href="/sign-in">
-              <Button variant="ghost" className="font-semibold hover:bg-foreground/5 hover:-translate-y-0.5 transition-all">Log In</Button>
+          <div className="flex gap-2 md:gap-4">
+            <Link href="/sign-in" className="hidden sm:block">
+              <Button variant="ghost" className="font-semibold hover:bg-foreground/5 hover:-translate-y-0.5 transition-all text-xs md:text-sm">Log In</Button>
             </Link>
             <Link href="/sign-up">
-              <Button className="font-semibold px-6 bg-foreground text-background hover:bg-foreground/90">Get Early Access</Button>
+              <Button className="font-semibold px-4 md:px-6 bg-foreground text-background hover:bg-foreground/90 text-xs md:text-sm">Get Early Access</Button>
             </Link>
           </div>
         </div>
