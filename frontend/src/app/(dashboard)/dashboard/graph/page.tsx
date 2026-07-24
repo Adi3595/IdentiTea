@@ -16,6 +16,7 @@ export default function GraphPage() {
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
   const [selectedNode, setSelectedNode] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<any>(null)
 
   useEffect(() => {
     // Resize observer
@@ -58,11 +59,21 @@ export default function GraphPage() {
 
   const getNodeColor = (node: any) => {
     if (node.type === "person" || node.label === "You") return "#ef4444" // Neo Red
-    if (node.type === "skill" || node.target_type === "Skill") return "#8b5cf6" // Purple
-    if (node.type === "tech" || node.target_type === "Technology") return "#f59e0b" // Amber
-    if (node.target_type === "Project" || node.type === "project") return "#10b981" // Emerald
-    return "#3b82f6" // Default Blue
+    if (node.label === "Skill" || node.type === "skill" || node.target_type === "Skill") return "#a855f7" // Purple
+    if (node.label === "Technology" || node.type === "tech" || node.target_type === "Technology") return "#f59e0b" // Amber
+    if (node.label === "Project" || node.target_type === "Project" || node.type === "project") return "#10b981" // Emerald
+    if (node.label === "Certification") return "#3b82f6" // Blue
+    return "#525252" // Neutral
   }
+
+  useEffect(() => {
+    if (graphRef.current && graphData.nodes.length > 0) {
+      // Increase repulsion to spread nodes out more
+      graphRef.current.d3Force('charge').strength(-400)
+      // Increase link distance
+      graphRef.current.d3Force('link').distance(120)
+    }
+  }, [graphData])
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto h-[calc(100vh-100px)] flex flex-col text-foreground relative">
@@ -107,6 +118,7 @@ export default function GraphPage() {
         {!loading && !error && (
           <div className="w-full h-full cursor-grab active:cursor-grabbing">
             <ForceGraph2D
+              ref={graphRef}
               width={dimensions.width}
               height={dimensions.height}
               graphData={graphData}
