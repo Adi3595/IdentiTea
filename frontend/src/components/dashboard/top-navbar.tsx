@@ -108,16 +108,14 @@ export function TopNavbar() {
             </div>
             
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="relative h-10 w-10 rounded-full border-2 border-foreground hover:bg-foreground hover:text-background p-0 overflow-hidden group transition-all flex items-center justify-center outline-none">
-                  <span className="pointer-events-none w-full h-full flex items-center justify-center">
-                    {user?.photoURL ? (
-                      <img src={user.photoURL} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <UserIcon className="h-5 w-5" />
-                    )}
-                  </span>
-                </button>
+              <DropdownMenuTrigger className="relative h-10 w-10 rounded-full border-2 border-foreground hover:bg-foreground hover:text-background p-0 overflow-hidden group transition-all flex items-center justify-center outline-none">
+                <span className="pointer-events-none w-full h-full flex items-center justify-center">
+                  {user?.photoURL ? (
+                    <img src={user.photoURL} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <UserIcon className="h-5 w-5" />
+                  )}
+                </span>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 rounded-none border-2 border-foreground shadow-[4px_4px_0_var(--foreground)] bg-background" align="end">
                 <div className="px-2 py-1.5 text-sm font-normal">
