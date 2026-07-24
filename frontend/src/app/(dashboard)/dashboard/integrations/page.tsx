@@ -1,7 +1,9 @@
 "use client"
 import { Globe, GitBranch, Network, Link as LinkIcon, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { fetchWithAuth } from "@/lib/api";
 
 const initialIntegrations = [
   { id: "github", name: "GitHub", icon: GitBranch, status: "Disconnected", desc: "Syncs repositories, commits, and PRs." },
@@ -12,17 +14,50 @@ const initialIntegrations = [
 export default function IntegrationsPage() {
   const [integrations, setIntegrations] = useState(initialIntegrations);
   const [connectingId, setConnectingId] = useState<string | null>(null);
+  const [usernameInput, setUsernameInput] = useState("");
+  const [showInputFor, setShowInputFor] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleConnect = (id: string) => {
-    setConnectingId(id);
-    
-    // Simulate OAuth handshake for hackathon demo
-    setTimeout(() => {
-      setIntegrations(prev => prev.map(int => 
-        int.id === id ? { ...int, status: "Connected" } : int
-      ));
-      setConnectingId(null);
-    }, 2000);
+  const handleConnect = async (id: string) => {
+    if (id === "github") {
+      if (showInputFor !== "github") {
+        setShowInputFor("github");
+        return;
+      }
+      
+      if (!usernameInput) {
+        setErrorMsg("Please enter a username");
+        return;
+      }
+      
+      setConnectingId(id);
+      setErrorMsg("");
+      
+      try {
+        await fetchWithAuth("/integrations/github", {
+          method: "POST",
+          body: JSON.stringify({ username: usernameInput })
+        });
+        
+        setIntegrations(prev => prev.map(int => 
+          int.id === id ? { ...int, status: "Connected" } : int
+        ));
+        setShowInputFor(null);
+      } catch (err: any) {
+        setErrorMsg(err.message || "Failed to sync GitHub");
+      } finally {
+        setConnectingId(null);
+      }
+    } else {
+      // Mock for other integrations
+      setConnectingId(id);
+      setTimeout(() => {
+        setIntegrations(prev => prev.map(int => 
+          int.id === id ? { ...int, status: "Connected" } : int
+        ));
+        setConnectingId(null);
+      }, 2000);
+    }
   }
 
   return (
@@ -47,6 +82,7 @@ export default function IntegrationsPage() {
         {integrations.map((int, i) => {
           const isConnecting = connectingId === int.id;
           const isConnected = int.status === "Connected";
+          const showInput = showInputFor === int.id;
           
           return (
           <div key={i} className="bg-background border-4 border-foreground p-6 flex flex-col justify-between group hover:bg-foreground/5 transition-colors">
@@ -60,7 +96,19 @@ export default function IntegrationsPage() {
                 </span>
               </div>
               <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-2">{int.name}</h3>
-              <p className="font-mono text-xs text-muted-foreground mb-6 leading-relaxed">{int.desc}</p>
+              <p className="font-mono text-xs text-muted-foreground mb-4 leading-relaxed">{int.desc}</p>
+              
+              {showInput && (
+                <div className="mb-4">
+                  <Input 
+                    placeholder="Enter GitHub Username" 
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    className="border-2 border-foreground rounded-none font-mono text-sm"
+                  />
+                  {errorMsg && <p className="text-red-500 text-xs mt-2 font-bold">{errorMsg}</p>}
+                </div>
+              )}
             </div>
             
             <Button 
@@ -76,7 +124,7 @@ export default function IntegrationsPage() {
               ) : (
                 <LinkIcon className="h-3 w-3 mr-2" />
               )}
-              {isConnecting ? "Connecting..." : isConnected ? "Configure" : "Connect"}
+              {isConnecting ? "Syncing..." : isConnected ? "Configure" : showInput ? "Confirm Sync" : "Connect"}
             </Button>
           </div>
         )})}

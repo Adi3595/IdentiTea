@@ -7,13 +7,14 @@ from services.pdf_parser import pdf_parser_service
 from services.ai_extractor import ai_extractor_service
 from services.graph import graph_service
 from core.auth import get_current_user
-from api.routers import users, timeline, graph
+from api.routers import users, timeline, graph, integrations
 
 api_router = APIRouter()
 
 api_router.include_router(users.router, prefix="/users", tags=["Users"])
 api_router.include_router(timeline.router, prefix="/timeline", tags=["Timeline"])
 api_router.include_router(graph.router, prefix="/graph-data", tags=["GraphData"])
+api_router.include_router(integrations.router, prefix="/integrations", tags=["Integrations"])
 
 MAX_FILE_SIZE = 5 * 1024 * 1024 # 5 MB
 ALLOWED_MIME_TYPES = ["application/pdf", "image/png", "image/jpeg"]
