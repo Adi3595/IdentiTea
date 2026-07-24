@@ -41,6 +41,6 @@ export default function CareersPage() {
           </div>
         </div>
       </div>
-    </div>
+
   );
 }
