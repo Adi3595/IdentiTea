@@ -83,11 +83,11 @@ export default function SignInPage() {
             className="bg-background border-4 border-foreground shadow-[12px_12px_0_var(--foreground)] p-8 md:p-10"
           >
             
-            <Link href="/" className="flex items-center gap-4 mb-12 cursor-pointer group">
-              <div className="bg-background border-2 border-foreground p-3 shadow-[4px_4px_0_rgba(15,11,10,1)] group-hover:shadow-[2px_2px_0_rgba(15,11,10,1)] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
-                <img src="/logo.svg" alt="IdentiTea Logo" className="w-10 h-10 group-hover:rotate-12 transition-transform duration-300" />
+            <Link href="/" className="flex items-center gap-3 md:gap-4 mb-10 md:mb-12 cursor-pointer group">
+              <div className="bg-background border-2 border-foreground p-2 md:p-3 shadow-[4px_4px_0_rgba(15,11,10,1)] group-hover:shadow-[2px_2px_0_rgba(15,11,10,1)] group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all">
+                <img src="/logo.svg" alt="IdentiTea Logo" className="w-8 h-8 md:w-10 md:h-10 group-hover:rotate-12 transition-transform duration-300" />
               </div>
-              <span className="font-[family-name:var(--font-black-ops)] text-3xl md:text-4xl tracking-tighter uppercase text-foreground">
+              <span className="font-[family-name:var(--font-black-ops)] text-2xl md:text-4xl tracking-tighter uppercase text-foreground">
                 IdentiTea
               </span>
             </Link>

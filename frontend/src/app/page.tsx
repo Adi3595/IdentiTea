@@ -33,9 +33,9 @@ export default function LandingPage() {
         className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b-4 border-foreground"
       >
         <div className="flex items-center justify-between h-16 px-4 md:px-8 max-w-screen-2xl mx-auto">
-          <Link href="/" className="flex items-center gap-3 group">
-            <img src="/logo.svg" alt="IdentiTea Logo" className="w-8 h-8 group-hover:rotate-12 transition-transform duration-300" />
-            <span className="font-[family-name:var(--font-black-ops)] text-2xl md:text-3xl tracking-tight text-foreground">
+          <Link href="/" className="flex items-center gap-2 md:gap-3 group">
+            <img src="/logo.svg" alt="IdentiTea Logo" className="w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform duration-300" />
+            <span className="font-[family-name:var(--font-black-ops)] text-xl md:text-2xl lg:text-3xl tracking-tight text-foreground">
               IdentiTea
             </span>
           </Link>
