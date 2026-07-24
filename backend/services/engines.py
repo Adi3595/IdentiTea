@@ -11,7 +11,7 @@ class IdentityEngine:
         self.is_mock = not bool(self.api_key)
         if not self.is_mock:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel("gemini-1.5-pro")
+            self.model = genai.GenerativeModel("gemini-3.5-flash")
 
     async def calculate_identity_score(self, user_id: str) -> dict:
         """
@@ -82,7 +82,7 @@ class IdentityEngine:
         ]
         """
         try:
-            response = self.model.generate_content(
+            response = await self.model.generate_content_async(
                 prompt,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",
@@ -158,7 +158,7 @@ class IdentityEngine:
         """
         
         try:
-            response = self.model.generate_content(
+            response = await self.model.generate_content_async(
                 prompt,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",

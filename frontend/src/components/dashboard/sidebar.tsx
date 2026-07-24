@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { name: "Achievements", href: "/dashboard/achievements", icon: Award },
   { name: "Integrations", href: "/dashboard/integrations", icon: Globe },
   { name: "Portfolio", href: "/dashboard/portfolio", icon: AppWindow },
-  { name: "Career AI", href: "/dashboard/career-ai", icon: BrainCircuit },
+  { name: "Resume Analytics", href: "/dashboard/resume-analysis", icon: BrainCircuit },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ]
 

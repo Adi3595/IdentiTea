@@ -158,67 +158,79 @@ export default function DocumentsPage() {
           )}
         </div>
 
-        {/* Pipeline Terminal Logs */}
-        <div className="bg-foreground text-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 h-[400px] flex flex-col font-mono">
-          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-background/20">
-            <Terminal className="h-5 w-5" />
-            <h2 className="uppercase tracking-widest font-bold text-sm">Extraction Pipeline</h2>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-2 text-xs break-words whitespace-pre-wrap">
-            {logs.length === 0 && <p className="text-background/50">Awaiting input...</p>}
-            <AnimatePresence>
-              {logs.map((log, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, x: -10 }} 
-                  animate={{ opacity: 1, x: 0 }}
-                  className={log.includes("FATAL") ? "text-red-400" : log.includes("SUCCESS") ? "text-green-400" : ""}
-                >
-                  &gt; {log}
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Structured Output Display */}
-      {result && result.metadata && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-12 bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8"
-        >
-          <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-6 border-b-2 border-foreground pb-4">
-            Parsed Knowledge Nodes
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-bold uppercase tracking-widest text-sm text-muted-foreground mb-4">Extracted Skills</h3>
-              <div className="flex flex-wrap gap-2">
-                {result.metadata.skills?.map((skill: any, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-foreground text-background font-bold text-xs uppercase border border-foreground">
-                    {skill.name} <span className="opacity-50">({(skill.confidence * 100).toFixed(0)}%)</span>
-                  </span>
-                ))}
-              </div>
+        {/* Right Side: Results or Placeholder */}
+        <div className="space-y-6 flex flex-col h-full">
+          {/* Pipeline Terminal Logs */}
+          <div className="bg-foreground text-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 h-[250px] flex flex-col font-mono shrink-0">
+            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-background/20">
+              <Terminal className="h-5 w-5" />
+              <h2 className="uppercase tracking-widest font-bold text-sm">Extraction Pipeline</h2>
             </div>
             
-            <div>
-              <h3 className="font-bold uppercase tracking-widest text-sm text-muted-foreground mb-4">Technologies</h3>
-              <div className="flex flex-wrap gap-2">
-                {result.metadata.technologies?.map((tech: any, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-background text-foreground font-bold text-xs uppercase border-2 border-foreground">
-                    {tech.name}
-                  </span>
+            <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-2 text-xs break-words whitespace-pre-wrap">
+              {logs.length === 0 && <p className="text-background/50">Awaiting input...</p>}
+              <AnimatePresence>
+                {logs.map((log, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: -10 }} 
+                    animate={{ opacity: 1, x: 0 }}
+                    className={log.includes("FATAL") ? "text-red-400" : log.includes("SUCCESS") ? "text-green-400" : ""}
+                  >
+                    &gt; {log}
+                  </motion.div>
                 ))}
-              </div>
+              </AnimatePresence>
             </div>
           </div>
-        </motion.div>
-      )}
+
+          {/* Structured Output Display */}
+          <div className="flex-1 min-h-[300px]">
+            {result && result.metadata ? (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="h-full bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-6 flex flex-col"
+              >
+                <h2 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-4 border-b-2 border-foreground pb-2">
+                  Extracted Entities
+                </h2>
+                <div className="flex-1 overflow-y-auto space-y-6">
+                  <div>
+                    <h3 className="font-bold uppercase tracking-widest text-xs text-muted-foreground mb-3">Skills Identified</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {result.metadata.skills?.map((skill: any, i: number) => (
+                        <span key={i} className="px-2 py-1 bg-foreground text-background font-bold text-[10px] uppercase border border-foreground">
+                          {skill.name} <span className="opacity-50">({(skill.confidence * 100).toFixed(0)}%)</span>
+                        </span>
+                      ))}
+                      {!result.metadata.skills?.length && <span className="text-xs font-mono text-muted-foreground">None found</span>}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-bold uppercase tracking-widest text-xs text-muted-foreground mb-3">Technologies</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {result.metadata.technologies?.map((tech: any, i: number) => (
+                        <span key={i} className="px-2 py-1 bg-background text-foreground font-bold text-[10px] uppercase border-2 border-foreground">
+                          {tech.name}
+                        </span>
+                      ))}
+                      {!result.metadata.technologies?.length && <span className="text-xs font-mono text-muted-foreground">None found</span>}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="h-full border-4 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center p-8 text-center text-muted-foreground bg-muted/10">
+                <BrainCircuit className="h-16 w-16 mb-4 opacity-20" />
+                <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-2">Awaiting Document Data</h3>
+                <p className="text-xs uppercase tracking-widest font-bold opacity-50 max-w-[250px]">Upload a resume or certificate to populate the knowledge graph and view AI extraction results here.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -14,6 +14,7 @@ export default function GraphPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
+  const [selectedNode, setSelectedNode] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -55,13 +56,21 @@ export default function GraphPage() {
     loadGraph()
   }, [])
 
+  const getNodeColor = (node: any) => {
+    if (node.type === "person" || node.label === "You") return "#ef4444" // Neo Red
+    if (node.type === "skill" || node.target_type === "Skill") return "#8b5cf6" // Purple
+    if (node.type === "tech" || node.target_type === "Technology") return "#f59e0b" // Amber
+    if (node.target_type === "Project" || node.type === "project") return "#10b981" // Emerald
+    return "#3b82f6" // Default Blue
+  }
+
   return (
-    <div className="space-y-6 max-w-6xl mx-auto h-[calc(100vh-100px)] flex flex-col text-foreground">
+    <div className="space-y-6 max-w-6xl mx-auto h-[calc(100vh-100px)] flex flex-col text-foreground relative">
       <CustomCursor />
       <div className="border-b-4 border-foreground pb-6 shrink-0 flex items-end justify-between">
         <div>
           <h1 className="font-[family-name:var(--font-black-ops)] text-4xl md:text-5xl tracking-tighter uppercase flex items-center gap-4">
-            <Network className="h-10 w-10" /> Knowledge Graph
+            <Network className="h-10 w-10 text-foreground" /> Knowledge Graph
           </h1>
           <p className="text-muted-foreground uppercase tracking-widest font-bold text-sm mt-2">Interactive Structural Web</p>
         </div>
@@ -102,37 +111,97 @@ export default function GraphPage() {
               height={dimensions.height}
               graphData={graphData}
               nodeLabel="label"
-              nodeColor={(node: any) => {
-                if (node.type === "person" || node.label === "You") return "#ef4444" // red
-                if (node.type === "skill" || node.target_type === "Skill") return "#3b82f6" // blue
-                if (node.type === "tech" || node.target_type === "Technology") return "#eab308" // yellow
-                if (node.target_type === "Project") return "#22c55e" // green
-                return "#0f0b0a"
-              }}
-              nodeRelSize={6}
-              linkColor={() => "#d6d3d1"}
+              nodeColor={getNodeColor}
+              nodeRelSize={7}
+              linkColor={() => "rgba(100, 100, 100, 0.4)"}
               linkDirectionalArrowLength={3.5}
               linkDirectionalArrowRelPos={1}
+              linkDirectionalParticles={2}
+              linkDirectionalParticleSpeed={(d: any) => 0.005}
+              linkDirectionalParticleWidth={2}
               backgroundColor="transparent"
               linkCurvature={0.25}
+              onNodeClick={(node) => setSelectedNode(node)}
+              onBackgroundClick={() => setSelectedNode(null)}
               nodeCanvasObject={(node: any, ctx, globalScale) => {
                 const label = node.label || node.target_name || node.id;
-                const fontSize = 12/globalScale;
-                ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+                const fontSize = 14/globalScale;
+                const isSelected = selectedNode && selectedNode.id === node.id;
                 
+                // Draw Selection Glow
+                if (isSelected) {
+                  ctx.beginPath();
+                  ctx.arc(node.x, node.y, 10, 0, 2 * Math.PI, false);
+                  ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; // Slight dark glow for light mode
+                  ctx.fill();
+                  ctx.lineWidth = 2;
+                  ctx.strokeStyle = getNodeColor(node);
+                  ctx.stroke();
+                }
+
                 // Draw circle
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
-                ctx.fillStyle = node.color || "#0f0b0a";
+                ctx.fillStyle = getNodeColor(node);
                 ctx.fill();
                 
                 // Draw text
+                ctx.font = `bold ${fontSize}px Inter, sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillStyle = '#0f0b0a';
-                ctx.fillText(label, node.x, node.y + 12);
+                ctx.fillStyle = isSelected ? getNodeColor(node) : '#0f0b0a';
+                ctx.fillText(label, node.x, node.y + 14);
               }}
             />
+          </div>
+        )}
+      </div>
+
+      {/* Side Panel */}
+      <div 
+        className={`absolute top-28 right-8 bottom-8 w-80 bg-background border-4 border-foreground shadow-[-8px_8px_0_var(--foreground)] transition-transform duration-300 ease-in-out z-20 flex flex-col ${selectedNode ? "translate-x-0" : "translate-x-[120%]"}`}
+      >
+        <div className="p-4 border-b-2 border-foreground flex justify-between items-center bg-foreground text-background">
+          <h2 className="font-[family-name:var(--font-black-ops)] uppercase tracking-widest text-lg">Node Details</h2>
+          <button onClick={() => setSelectedNode(null)} className="hover:opacity-70 font-mono text-sm font-bold">[X]</button>
+        </div>
+        
+        {selectedNode && (
+          <div className="p-6 space-y-6 overflow-y-auto">
+            <div>
+              <p className="text-xs font-bold font-mono text-muted-foreground uppercase mb-1">Entity Name</p>
+              <h3 className="text-xl font-bold uppercase">{selectedNode.label || selectedNode.id}</h3>
+            </div>
+            
+            <div>
+              <p className="text-xs font-bold font-mono text-muted-foreground uppercase mb-1">Entity Type</p>
+              <span 
+                className="px-2 py-1 text-xs font-bold uppercase text-white" 
+                style={{ backgroundColor: getNodeColor(selectedNode) }}
+              >
+                {selectedNode.type || selectedNode.target_type || "Unknown"}
+              </span>
+            </div>
+
+            <div className="pt-4 border-t-2 border-dashed border-muted-foreground/30">
+              <p className="text-xs font-bold font-mono text-muted-foreground uppercase mb-2">Connected Relationships</p>
+              <div className="space-y-2">
+                {graphData.links
+                  .filter(l => (l.source.id || l.source) === selectedNode.id || (l.target.id || l.target) === selectedNode.id)
+                  .map((l: any, i: number) => {
+                    const isSource = (l.source.id || l.source) === selectedNode.id;
+                    const connectedNodeId = isSource ? (l.target.id || l.target) : (l.source.id || l.source);
+                    const connectedNode = graphData.nodes.find(n => n.id === connectedNodeId);
+                    
+                    return (
+                      <div key={i} className="text-xs font-mono p-2 bg-muted/20 border border-muted-foreground/20">
+                        <span className="text-muted-foreground">{isSource ? "Outgoing:" : "Incoming:"}</span> <br/>
+                        <span className="font-bold text-foreground">{l.label}</span> {isSource ? "→" : "←"} {connectedNode?.label || connectedNodeId}
+                      </div>
+                    )
+                  })}
+              </div>
+            </div>
           </div>
         )}
       </div>
