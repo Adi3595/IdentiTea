@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: Optional[str] = None
     
     BACKEND_SECRET_KEY: str = "supersecretkey"
+    CORS_ORIGINS: str = "http://localhost:3000"
 
     class Config:
         env_file = ".env.development"
