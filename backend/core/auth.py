@@ -5,10 +5,17 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, APIKeyHea
 from core.config import settings
 import logging
 
+import json
+
 # Initialize Firebase Admin
 try:
-    # Use the project ID directly; this allows verifying tokens without a private key
-    app = firebase_admin.initialize_app(options={'projectId': settings.FIREBASE_PROJECT_ID})
+    if settings.FIREBASE_SERVICE_ACCOUNT:
+        cert_dict = json.loads(settings.FIREBASE_SERVICE_ACCOUNT)
+        cred = credentials.Certificate(cert_dict)
+        app = firebase_admin.initialize_app(cred)
+    else:
+        # Use the project ID directly; this allows verifying tokens without a private key locally if ADC is setup
+        app = firebase_admin.initialize_app(options={'projectId': settings.FIREBASE_PROJECT_ID})
 except ValueError:
     # Already initialized
     app = firebase_admin.get_app()
