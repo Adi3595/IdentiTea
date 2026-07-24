@@ -11,7 +11,7 @@ class AIExtractorService:
         if not self.is_mock:
             genai.configure(api_key=self.api_key)
             # Using the fast and powerful 1.5 Flash for highly accurate JSON extraction
-            self.model = genai.GenerativeModel("gemini-1.5-flash")
+            self.model = genai.GenerativeModel("gemini-pro")
 
     async def extract_metadata(self, text_content: str, filename: str) -> DocumentMetadata:
         """
@@ -64,17 +64,21 @@ class AIExtractorService:
         """
         
         try:
-            # We enforce JSON output directly via the generation config
+            # We use the universal gemini-pro model to ensure compatibility across all API keys/SDKs
             response = await self.model.generate_content_async(
                 prompt,
                 generation_config=genai.GenerationConfig(
-                    response_mime_type="application/json",
                     temperature=0.1 # Low temperature for factual extraction
                 )
             )
             
             # Parse the JSON string into our Pydantic model
-            raw_json = response.text
+            raw_json = response.text.strip()
+            if raw_json.startswith("```json"):
+                raw_json = raw_json[7:-3].strip()
+            elif raw_json.startswith("```"):
+                raw_json = raw_json[3:-3].strip()
+                
             parsed_data = json.loads(raw_json)
             
             return DocumentMetadata(**parsed_data)
