@@ -42,7 +42,7 @@ app.add_middleware(AuditLogMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 
 @app.get("/system-status")
-@limiter.limit("5/minute")
+@limiter.limit("120/minute")
 async def system_status_check(request: Request):
     return {"status": "ok", "environment": settings.ENVIRONMENT}
 
