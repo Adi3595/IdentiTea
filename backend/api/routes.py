@@ -7,7 +7,8 @@ from services.pdf_parser import pdf_parser_service
 from services.ai_extractor import ai_extractor_service
 from services.graph import graph_service
 from core.auth import get_current_user
-from api.routers import users, timeline, graph, integrations
+from services.postgres import db
+from api.routers import users, timeline, graph, integrations, career
 
 api_router = APIRouter()
 
@@ -15,6 +16,7 @@ api_router.include_router(users.router, prefix="/users", tags=["Users"])
 api_router.include_router(timeline.router, prefix="/timeline", tags=["Timeline"])
 api_router.include_router(graph.router, prefix="/graph-data", tags=["GraphData"])
 api_router.include_router(integrations.router, prefix="/integrations", tags=["Integrations"])
+api_router.include_router(career.router, prefix="/career", tags=["Career"])
 
 MAX_FILE_SIZE = 5 * 1024 * 1024 # 5 MB
 ALLOWED_MIME_TYPES = ["application/pdf", "image/png", "image/jpeg"]
@@ -71,6 +73,15 @@ async def upload_document(
             document_id=document_id,
             metadata=metadata,
             user_id=user_id
+        )
+        
+        from datetime import datetime
+        db.log_timeline_event(
+            user_id=user_id,
+            event_type="upload",
+            title=f"Uploaded {metadata.category}",
+            description=f"Extracted {len(metadata.skills)} skills and {len(metadata.technologies)} technologies.",
+            date=datetime.utcnow().isoformat() + "Z"
         )
         
         # 8. Return structured response

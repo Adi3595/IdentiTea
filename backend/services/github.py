@@ -1,8 +1,10 @@
 import httpx
 from services.graph import graph_service
+from services.postgres import db
 from models.document import DocumentMetadata, ExtractedEntity
 import logging
 import uuid
+from datetime import datetime
 
 class GithubService:
     async def sync_repositories(self, username: str, user_id: str) -> dict:
@@ -65,7 +67,16 @@ class GithubService:
                     processed_count += 1
                 except Exception as e:
                     logging.error(f"Failed to ingest repo {repo.get('name')}: {e}")
-                    
+            
+            if processed_count > 0:
+                db.log_timeline_event(
+                    user_id=user_id,
+                    event_type="integration",
+                    title="Synced GitHub",
+                    description=f"Successfully mapped {processed_count} repositories to the Knowledge Graph.",
+                    date=datetime.utcnow().isoformat() + "Z"
+                )
+                
             return {
                 "status": "success", 
                 "message": f"Successfully synced {processed_count} repositories.",

@@ -16,7 +16,7 @@ export default function PublicPortfolioPage() {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/portfolio/public/${id}`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/portfolio/public/${id}`)
         if (!response.ok) throw new Error("Portfolio not found")
         const data = await response.json()
         setPortfolio(data)
