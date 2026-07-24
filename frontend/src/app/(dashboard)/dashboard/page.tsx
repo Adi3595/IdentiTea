@@ -11,20 +11,13 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchWithAuth } from "@/lib/api"
 import { useAuth } from "@/providers/auth-provider"
 
-const stats = [
-  { label: "Verified Skills", value: "24", icon: ShieldCheck },
-  { label: "Projects", value: "12", icon: Network },
-  { label: "Certificates", value: "5", icon: Award },
-  { label: "Internships", value: "2", icon: Briefcase },
-]
-
 export default function DashboardPage() {
   const { user } = useAuth();
 
   const { data: health, isLoading } = useQuery({
     queryKey: ['backend-health'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:8000/health')
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/health`)
       if (!res.ok) throw new Error('Network response was not ok')
       return res.json()
     },
@@ -42,8 +35,35 @@ export default function DashboardPage() {
     enabled: !!user,
   })
 
+  const { data: portfolioData } = useQuery({
+    queryKey: ['portfolio-auto'],
+    queryFn: async () => {
+      if (!user) return null;
+      return fetchWithAuth('/portfolio/auto')
+    },
+    enabled: !!user,
+  })
+
+  const { data: gapAnalysisData } = useQuery({
+    queryKey: ['gap-analysis-default'],
+    queryFn: async () => {
+      if (!user) return null;
+      return fetchWithAuth('/career/gap-analysis?target_role=Software Engineer')
+    },
+    enabled: !!user,
+  })
+
   const score = identityData?.score || 0
   const identityScoreData = [{ name: "Score", value: score, fill: "var(--foreground)" }]
+
+  const stats = [
+    { label: "Verified Skills", value: portfolioData?.skills?.length || "0", icon: ShieldCheck },
+    { label: "Projects", value: portfolioData?.projects?.length || "0", icon: Network },
+    { label: "Certificates", value: portfolioData?.certificates?.length || "0", icon: Award },
+    { label: "Internships", value: portfolioData?.internships?.length || "0", icon: Briefcase },
+  ]
+
+  const gapScore = gapAnalysisData?.match_score || 0;
 
   return (
     <div className="space-y-12 max-w-7xl mx-auto text-foreground">
@@ -115,19 +135,19 @@ export default function DashboardPage() {
                 <Target className="h-6 w-6" />
                 <h2 className="font-[family-name:var(--font-black-ops)] text-2xl tracking-tighter uppercase">Career Matrix</h2>
               </div>
-              <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Target Vector: AI Engineer</p>
+              <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Target Vector: Software Engineer</p>
             </div>
             <div className="mt-8">
               <div className="flex justify-between items-end mb-3">
-                <span className="font-[family-name:var(--font-black-ops)] text-5xl tracking-tighter">92%</span>
+                <span className="font-[family-name:var(--font-black-ops)] text-5xl tracking-tighter">{gapScore}%</span>
                 <span className="text-xs font-bold bg-foreground text-background px-3 py-1 flex items-center gap-2 uppercase tracking-widest">
-                  <TrendingUp className="h-4 w-4"/> Delta +4%
+                  <TrendingUp className="h-4 w-4"/> Delta Vector
                 </span>
               </div>
               <div className="h-3 w-full bg-border border-2 border-foreground overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }} 
-                  animate={{ width: "92%" }} 
+                  animate={{ width: `${gapScore}%` }} 
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
                   className="h-full bg-foreground" 
                 />
@@ -149,7 +169,9 @@ export default function DashboardPage() {
               <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Cryptographic Validation</p>
             </div>
             <div className="mt-6 flex items-baseline gap-2">
-              <span className="font-[family-name:var(--font-black-ops)] text-5xl tracking-tighter">48</span>
+              <span className="font-[family-name:var(--font-black-ops)] text-5xl tracking-tighter">
+                {portfolioData ? (portfolioData.skills?.length || 0) + (portfolioData.projects?.length || 0) : 0}
+              </span>
               <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground border-b-2 border-foreground pb-1">Secured Nodes</span>
             </div>
           </motion.div>
@@ -188,15 +210,20 @@ export default function DashboardPage() {
             <Terminal className="h-6 w-6"/> Pipeline Logs
           </h2>
           <div className="space-y-4 font-mono text-sm">
-            {[1, 2, 3].map((i) => (
+            {portfolioData?.skills?.slice(0,3).map((skill: any, i: number) => (
               <div key={i} className="border-l-4 border-foreground pl-4 py-2 hover:bg-foreground/5 transition-colors">
-                <p className="font-bold text-foreground mb-1">&gt; INGEST: Frontend_Resume_2026.pdf</p>
+                <p className="font-bold text-foreground mb-1">&gt; INGEST: VERIFIED_SKILL_{skill.name.toUpperCase().replace(/\s+/g, '_')}</p>
                 <div className="flex justify-between items-center text-muted-foreground text-xs uppercase tracking-widest">
-                  <span>Status: Success [14 Nodes Extracted]</span>
-                  <span>T-2H</span>
+                  <span>Confidence: {(skill.confidence * 100).toFixed(0)}%</span>
+                  <span>LIVE</span>
                 </div>
               </div>
             ))}
+            {(!portfolioData?.skills || portfolioData.skills.length === 0) && (
+              <div className="text-muted-foreground text-xs uppercase tracking-widest">
+                No pipeline activity detected. Upload a document.
+              </div>
+            )}
           </div>
         </motion.div>
         
@@ -204,25 +231,21 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8"
+          className="bg-foreground text-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8 relative overflow-hidden group cursor-pointer"
         >
-          <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-6 flex items-center gap-3 border-b-2 border-foreground pb-4">
-            <Network className="h-6 w-6"/> Topology
+          <div className="absolute top-0 right-0 w-32 h-32 bg-background opacity-10 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
+          
+          <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-4">
+            Ready for Inference?
           </h2>
-          <div className="space-y-4 font-mono text-sm">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="border-l-4 border-foreground pl-4 py-2 hover:bg-foreground/5 transition-colors">
-                <p className="font-bold text-foreground mb-1">&gt; LINK: React.js &lt;--&gt; IdentiTea Dashboard</p>
-                <div className="flex justify-between items-center text-muted-foreground text-xs uppercase tracking-widest">
-                  <span>Edge Weight: +0.8</span>
-                  <span>Validated</span>
-                </div>
-              </div>
-            ))}
+          <p className="font-mono text-sm mb-8 opacity-80 leading-relaxed">
+            Upload your resume, transcripts, or project repositories. Let the Gemini Extraction Engine parse unstructured data into cryptographically verified Knowledge Nodes.
+          </p>
+          <div className="flex items-center gap-2 font-bold uppercase tracking-widest text-xs border-b-2 border-background inline-flex pb-1 group-hover:pl-4 transition-all duration-300">
+            Initialize Upload Protocol <TrendingUp className="h-4 w-4" />
           </div>
         </motion.div>
       </div>
-      
     </div>
   )
 }
