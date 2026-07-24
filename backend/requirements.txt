@@ -14,4 +14,4 @@ firebase-admin
 pydantic-settings
 PyMuPDF
 slowapi
- 
+psycopg2-binary 

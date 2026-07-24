@@ -1,3 +1,5 @@
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -9,10 +11,66 @@ from core.config import settings
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Auto-create tables on startup
+    if settings.DATABASE_URL:
+        try:
+            import psycopg2
+            logging.info("Running automatic DB migrations via psycopg2...")
+            conn = psycopg2.connect(settings.DATABASE_URL)
+            cur = conn.cursor()
+            
+            # user_settings
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS user_settings (
+                user_id TEXT PRIMARY KEY,
+                theme TEXT DEFAULT 'system',
+                email_notifications BOOLEAN DEFAULT true,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
+            """)
+            
+            # timeline_events
+            cur.execute("""
+            CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+            CREATE TABLE IF NOT EXISTS timeline_events (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT,
+                date TEXT NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
+            """)
+            
+            # audit_logs
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS audit_logs (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id TEXT,
+                action TEXT NOT NULL,
+                resource TEXT,
+                ip_address TEXT,
+                timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
+            """)
+            
+            conn.commit()
+            cur.close()
+            conn.close()
+            logging.info("DB migrations completed successfully.")
+        except Exception as e:
+            logging.error(f"Failed to run automatic DB migrations: {e}")
+    
+    yield
+
 app = FastAPI(
     title="IdentiTea API",
     version="1.0.0",
-    description="IdentiTea API"
+    description="IdentiTea API",
+    lifespan=lifespan
 )
 
 app.state.limiter = limiter
