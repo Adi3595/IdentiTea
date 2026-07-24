@@ -30,7 +30,8 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str
 
     class Config:
-        env_file = ".env.development"
+        import os
+        env_file = os.path.join(os.path.dirname(__file__), "..", ".env.development")
         env_file_encoding = "utf-8"
         extra = "ignore"
 
