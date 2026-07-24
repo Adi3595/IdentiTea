@@ -8,6 +8,8 @@ import {
 import { RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer } from "recharts"
 
 import { useQuery } from '@tanstack/react-query'
+import { fetchWithAuth } from "@/lib/api"
+import { useAuth } from "@/providers/auth-provider"
 
 const stats = [
   { label: "Verified Skills", value: "24", icon: ShieldCheck },
@@ -17,6 +19,8 @@ const stats = [
 ]
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+
   const { data: health, isLoading } = useQuery({
     queryKey: ['backend-health'],
     queryFn: async () => {
@@ -31,11 +35,11 @@ export default function DashboardPage() {
   const { data: identityData, isLoading: isLoadingScore } = useQuery({
     queryKey: ['identity-score'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:8000/api/identity/score')
-      if (!res.ok) throw new Error('Network response was not ok')
-      return res.json()
+      if (!user) return { score: 0 };
+      return fetchWithAuth('/identity/score')
     },
     refetchInterval: 10000,
+    enabled: !!user,
   })
 
   const score = identityData?.score || 0
