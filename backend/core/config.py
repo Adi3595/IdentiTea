@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     
     # Firebase
     FIREBASE_PROJECT_ID: str = "identitea"
-    FIREBASE_SERVICE_ACCOUNT: Optional[str] = None
+    FIREBASE_SERVICE_ACCOUNT_JSON: Optional[str] = None
     
     # Supabase / DB
     SUPABASE_URL: Optional[str] = None

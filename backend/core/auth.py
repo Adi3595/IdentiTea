@@ -9,8 +9,8 @@ import json
 
 # Initialize Firebase Admin
 try:
-    if settings.FIREBASE_SERVICE_ACCOUNT:
-        cert_dict = json.loads(settings.FIREBASE_SERVICE_ACCOUNT)
+    if settings.FIREBASE_SERVICE_ACCOUNT_JSON:
+        cert_dict = json.loads(settings.FIREBASE_SERVICE_ACCOUNT_JSON)
         cred = credentials.Certificate(cert_dict)
         app = firebase_admin.initialize_app(cred)
     else:
