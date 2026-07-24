@@ -170,9 +170,10 @@ class GraphService:
         if self.is_mock:
             return [{"id": "p1", "title": "MemoryVerse", "description": "Graph project"}]
         query = """
-        MATCH (u:User {id: $user_id})-[:OWNS_PROJECT]->(p:Project)
-        OPTIONAL MATCH (p)-[:USES]->(t:Technology)
-        RETURN elementId(p) as id, p.title as title, p.description as description, collect(t.displayName) as technologies
+        MATCH (u:User {id: $user_id})-[:OWNS_DOCUMENT]->(p:Document)
+        WHERE p.category = 'Project'
+        OPTIONAL MATCH (p)-[:MENTIONS_TECH]->(t:Technology)
+        RETURN elementId(p) as id, coalesce(p.title, 'Unnamed Project') as title, coalesce(p.summary, '') as description, collect(t.displayName) as technologies
         """
         try:
             async with self.driver.session() as session:
@@ -186,8 +187,9 @@ class GraphService:
         if self.is_mock:
             return []
         query = """
-        MATCH (u:User {id: $user_id})-[:HAS_INTERNSHIP]->(i:Internship)-[:AT_COMPANY]->(c:Company)
-        RETURN elementId(i) as id, i.role as role, c.name as company, i.duration as duration
+        MATCH (u:User {id: $user_id})-[:OWNS_DOCUMENT]->(i:Document)
+        WHERE i.category = 'Internship' OR i.category = 'Experience'
+        RETURN elementId(i) as id, coalesce(i.title, 'Unnamed Role') as role, coalesce(i.organization, 'Unknown Company') as company, coalesce(i.date, 'Unknown Duration') as duration
         """
         try:
             async with self.driver.session() as session:
@@ -200,9 +202,10 @@ class GraphService:
         if self.is_mock:
             return []
         query = """
-        MATCH (u:User {id: $user_id})-[:HAS_CERTIFICATE]->(c:Certificate)
-        OPTIONAL MATCH (c)-[:VERIFIES]->(s:Skill)
-        RETURN elementId(c) as id, coalesce(c.displayName, c.name) as name, c.issuer as issuer, collect(s.displayName) as verified_skills
+        MATCH (u:User {id: $user_id})-[:OWNS_DOCUMENT]->(c:Document)
+        WHERE c.category = 'Certificate' OR c.category = 'Certification'
+        OPTIONAL MATCH (c)-[:MENTIONS_SKILL]->(s:Skill)
+        RETURN elementId(c) as id, coalesce(c.title, 'Unnamed Certificate') as name, coalesce(c.organization, 'Unknown Issuer') as issuer, collect(s.displayName) as verified_skills
         """
         try:
             async with self.driver.session() as session:
