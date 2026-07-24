@@ -3,7 +3,7 @@ import { Inter, Black_Ops_One } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
-import { ClerkProvider } from '@clerk/nextjs'
+import { AuthProvider } from "@/providers/auth-provider";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -44,7 +44,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${blackOpsOne.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-primary/20 selection:text-primary transition-colors duration-300">
         <ThemeProvider
@@ -54,11 +53,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            {children}
+            <AuthProvider>
+              {children}
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
-    </ClerkProvider>
   );
 }

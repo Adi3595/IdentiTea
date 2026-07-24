@@ -123,4 +123,80 @@ class GraphService:
             print(f"Error fetching graph data: {e}")
             return {"nodes": [], "edges": []}
 
+    async def get_user_skills(self, user_id: str):
+        if self.is_mock:
+            return [{"id": "s1", "name": "Python", "confidence": 0.9, "category": "Language"}]
+        query = """
+        MATCH (u:User {id: $user_id})-[r:HAS_SKILL]->(s:Skill)
+        RETURN elementId(s) as id, s.displayName as name, r.confidence as confidence
+        ORDER BY r.confidence DESC
+        """
+        try:
+            async with self.driver.session() as session:
+                result = await session.run(query, user_id=user_id)
+                records = await result.data()
+                return records
+        except Exception as e:
+            print(f"Error fetching skills: {e}")
+            return []
+
+    async def get_user_projects(self, user_id: str):
+        if self.is_mock:
+            return [{"id": "p1", "title": "MemoryVerse", "description": "Graph project"}]
+        query = """
+        MATCH (u:User {id: $user_id})-[:OWNS_PROJECT]->(p:Project)
+        OPTIONAL MATCH (p)-[:USES]->(t:Technology)
+        RETURN elementId(p) as id, p.title as title, p.description as description, collect(t.displayName) as technologies
+        """
+        try:
+            async with self.driver.session() as session:
+                result = await session.run(query, user_id=user_id)
+                return await result.data()
+        except Exception as e:
+            print(f"Error fetching projects: {e}")
+            return []
+
+    async def get_user_internships(self, user_id: str):
+        if self.is_mock:
+            return []
+        query = """
+        MATCH (u:User {id: $user_id})-[:HAS_INTERNSHIP]->(i:Internship)-[:AT_COMPANY]->(c:Company)
+        RETURN elementId(i) as id, i.role as role, c.name as company, i.duration as duration
+        """
+        try:
+            async with self.driver.session() as session:
+                result = await session.run(query, user_id=user_id)
+                return await result.data()
+        except Exception as e:
+            return []
+
+    async def get_user_certificates(self, user_id: str):
+        if self.is_mock:
+            return []
+        query = """
+        MATCH (u:User {id: $user_id})-[:HAS_CERTIFICATE]->(c:Certificate)
+        OPTIONAL MATCH (c)-[:VERIFIES]->(s:Skill)
+        RETURN elementId(c) as id, c.name as name, c.issuer as issuer, collect(s.displayName) as verified_skills
+        """
+        try:
+            async with self.driver.session() as session:
+                result = await session.run(query, user_id=user_id)
+                return await result.data()
+        except Exception as e:
+            return []
+
+    async def get_user_achievements(self, user_id: str):
+        if self.is_mock:
+            return []
+        query = """
+        MATCH (u:User {id: $user_id})-[:HAS_ACHIEVEMENT]->(a:Achievement)
+        RETURN elementId(a) as id, a.title as title, a.event as event, a.description as description
+        """
+        try:
+            async with self.driver.session() as session:
+                result = await session.run(query, user_id=user_id)
+                return await result.data()
+        except Exception as e:
+            return []
+
 graph_service = GraphService()

@@ -5,3 +5,7 @@ node_modules/
 dist/
 build/
 .next/
+backend/venv/
+backend/venv_win/
+__pycache__/
+*.pyc

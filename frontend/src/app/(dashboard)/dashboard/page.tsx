@@ -3,20 +3,18 @@
 import { motion } from "framer-motion"
 import { 
   Award, BookOpen, Briefcase, FileText, 
-  Github, Network, ShieldCheck, Target, TrendingUp 
+  Network, ShieldCheck, Target, TrendingUp, Sparkles, Terminal
 } from "lucide-react"
 import { RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer } from "recharts"
 
 import { useQuery } from '@tanstack/react-query'
 
 const stats = [
-  { label: "Verified Skills", value: "24", icon: ShieldCheck, color: "text-green-500", bg: "bg-green-500/10" },
-  { label: "Projects", value: "12", icon: Network, color: "text-blue-500", bg: "bg-blue-500/10" },
-  { label: "Certificates", value: "5", icon: Award, color: "text-purple-500", bg: "bg-purple-500/10" },
-  { label: "Internships", value: "2", icon: Briefcase, color: "text-orange-500", bg: "bg-orange-500/10" },
+  { label: "Verified Skills", value: "24", icon: ShieldCheck },
+  { label: "Projects", value: "12", icon: Network },
+  { label: "Certificates", value: "5", icon: Award },
+  { label: "Internships", value: "2", icon: Briefcase },
 ]
-
-const identityScoreData = [{ name: "Score", value: 85, fill: "var(--color-primary)" }]
 
 export default function DashboardPage() {
   const { data: health, isLoading } = useQuery({
@@ -30,29 +28,49 @@ export default function DashboardPage() {
     refetchInterval: 5000,
   })
 
+  const { data: identityData, isLoading: isLoadingScore } = useQuery({
+    queryKey: ['identity-score'],
+    queryFn: async () => {
+      const res = await fetch('http://localhost:8000/api/identity/score')
+      if (!res.ok) throw new Error('Network response was not ok')
+      return res.json()
+    },
+    refetchInterval: 10000,
+  })
+
+  const score = identityData?.score || 0
+  const identityScoreData = [{ name: "Score", value: score, fill: "var(--foreground)" }]
+
   return (
-    <div className="space-y-8 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
+    <div className="space-y-12 max-w-7xl mx-auto text-foreground">
+      
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 border-b-4 border-foreground pb-6">
+        <div>
+          <h1 className="font-[family-name:var(--font-black-ops)] text-4xl md:text-6xl tracking-tighter uppercase">Overview</h1>
+          <p className="text-muted-foreground uppercase tracking-widest font-bold text-sm mt-2">Central Nervous System</p>
+        </div>
         
-        <div className="flex items-center gap-2 text-sm bg-card border border-border/50 px-4 py-2 rounded-full">
-          <div className={`h-2 w-2 rounded-full ${isLoading ? 'bg-yellow-500 animate-pulse' : (health ? 'bg-green-500' : 'bg-red-500')}`} />
-          <span className="text-muted-foreground font-medium">
-            Backend: {isLoading ? 'Connecting...' : (health ? 'Connected' : 'Offline')}
+        <div className="flex items-center gap-3 text-sm border-2 border-foreground bg-background px-4 py-2 shadow-[4px_4px_0_var(--foreground)]">
+          <div className={`h-3 w-3 ${isLoading ? 'bg-yellow-500 animate-pulse' : (health ? 'bg-green-500' : 'bg-red-500')}`} />
+          <span className="font-bold uppercase tracking-widest text-xs">
+            SYS: {isLoading ? 'SYNCING' : (health ? 'ONLINE' : 'OFFLINE')}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
         {/* Identity Score Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="col-span-1 md:col-span-1 bg-card border border-border/50 rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group"
+          className="col-span-1 md:col-span-1 bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8 flex flex-col items-center justify-center relative group hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0_var(--foreground)] transition-all"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <h2 className="text-lg font-semibold text-muted-foreground mb-4">Identity Score</h2>
-          <div className="h-48 w-full">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,var(--foreground)_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03] pointer-events-none" />
+          
+          <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-4">Identity Score</h2>
+          <div className="h-48 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
               <RadialBarChart 
                 cx="50%" cy="50%" innerRadius="70%" outerRadius="100%" 
@@ -60,45 +78,54 @@ export default function DashboardPage() {
               >
                 <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                 <RadialBar
-                  background={{ fill: 'var(--color-accent)' }}
-                  cornerRadius={10}
+                  background={{ fill: 'var(--border)' }}
+                  cornerRadius={0}
                   dataKey="value"
                 />
               </RadialBarChart>
             </ResponsiveContainer>
           </div>
-          <div className="absolute inset-0 flex items-center justify-center flex-col mt-4">
-            <span className="text-4xl font-extrabold text-primary">85</span>
-            <span className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Excellent</span>
+          <div className="absolute inset-0 flex items-center justify-center flex-col mt-8">
+            {isLoadingScore ? (
+               <span className="font-[family-name:var(--font-black-ops)] text-4xl animate-pulse">---</span>
+            ) : (
+               <span className="font-[family-name:var(--font-black-ops)] text-5xl">{score}</span>
+            )}
+            <span className="text-[10px] font-bold bg-foreground text-background px-2 py-1 uppercase tracking-widest mt-2 border border-background">
+              Verified
+            </span>
           </div>
         </motion.div>
 
         {/* Career Readiness & Evidence */}
-        <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-6">
+        <div className="col-span-1 md:col-span-2 flex flex-col gap-8">
+          
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white border border-border/60 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow"
+            transition={{ delay: 0.1 }}
+            className="bg-background border-4 border-foreground p-8 shadow-[8px_8px_0_var(--foreground)] flex flex-col justify-between hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0_var(--foreground)] transition-all"
           >
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Target className="h-5 w-5 text-primary" />
-                <h2 className="font-semibold text-foreground">Career Readiness</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <Target className="h-6 w-6" />
+                <h2 className="font-[family-name:var(--font-black-ops)] text-2xl tracking-tighter uppercase">Career Matrix</h2>
               </div>
-              <p className="text-sm text-muted-foreground">Match with target role: AI Engineer</p>
+              <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Target Vector: AI Engineer</p>
             </div>
             <div className="mt-8">
               <div className="flex justify-between items-end mb-3">
-                <span className="text-4xl font-extrabold tracking-tight">92%</span>
-                <span className="text-sm font-medium text-green-500 bg-green-500/10 px-2 py-1 rounded-full flex items-center gap-1"><TrendingUp className="h-3 w-3"/> +4%</span>
+                <span className="font-[family-name:var(--font-black-ops)] text-5xl tracking-tighter">92%</span>
+                <span className="text-xs font-bold bg-foreground text-background px-3 py-1 flex items-center gap-2 uppercase tracking-widest">
+                  <TrendingUp className="h-4 w-4"/> Delta +4%
+                </span>
               </div>
-              <div className="h-2 w-full bg-black/5 rounded-full overflow-hidden">
+              <div className="h-3 w-full bg-border border-2 border-foreground overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }} 
                   animate={{ width: "92%" }} 
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                  className="h-full bg-primary rounded-full" 
+                  className="h-full bg-foreground" 
                 />
               </div>
             </div>
@@ -107,21 +134,22 @@ export default function DashboardPage() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white border border-border/60 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow"
+            transition={{ delay: 0.2 }}
+            className="bg-background border-4 border-foreground p-8 shadow-[8px_8px_0_var(--foreground)] flex flex-col justify-between hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0_var(--foreground)] transition-all"
           >
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <ShieldCheck className="h-5 w-5 text-secondary" />
-                <h2 className="font-semibold text-foreground">Evidence Engine</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <ShieldCheck className="h-6 w-6" />
+                <h2 className="font-[family-name:var(--font-black-ops)] text-2xl tracking-tighter uppercase">Evidence Engine</h2>
               </div>
-              <p className="text-sm text-muted-foreground">Skills backed by documentation</p>
+              <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Cryptographic Validation</p>
             </div>
-            <div className="mt-8">
-              <span className="text-4xl font-extrabold tracking-tight">48</span>
-              <span className="text-sm font-medium text-muted-foreground ml-2">verified nodes</span>
+            <div className="mt-6 flex items-baseline gap-2">
+              <span className="font-[family-name:var(--font-black-ops)] text-5xl tracking-tighter">48</span>
+              <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground border-b-2 border-foreground pb-1">Secured Nodes</span>
             </div>
           </motion.div>
+          
         </div>
       </div>
 
@@ -133,39 +161,36 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + (i * 0.1) }}
-            className="bg-card border border-border/50 rounded-2xl p-6 flex items-center gap-4 group hover:border-primary/50 transition-colors cursor-pointer"
+            className="bg-background border-4 border-foreground p-6 flex flex-col items-start gap-4 hover:bg-foreground hover:text-background transition-colors group cursor-crosshair shadow-[4px_4px_0_var(--foreground)]"
           >
-            <div className={`h-12 w-12 rounded-full ${stat.bg} ${stat.color} flex items-center justify-center`}>
-              <stat.icon className="h-6 w-6" />
-            </div>
+            <stat.icon className="h-8 w-8" />
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-2xl font-bold">{stat.value}</h3>
+              <h3 className="font-[family-name:var(--font-black-ops)] text-3xl mb-1">{stat.value}</h3>
+              <p className="text-xs font-bold uppercase tracking-widest group-hover:text-background text-muted-foreground">{stat.label}</p>
             </div>
           </motion.div>
         ))}
       </div>
 
       {/* Recent Activity / Pipeline */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm"
+          className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8"
         >
-          <h2 className="font-medium mb-4 flex items-center gap-2"><FileText className="h-5 w-5 text-primary"/> Latest Documents</h2>
-          <div className="space-y-4">
+          <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-6 flex items-center gap-3 border-b-2 border-foreground pb-4">
+            <Terminal className="h-6 w-6"/> Pipeline Logs
+          </h2>
+          <div className="space-y-4 font-mono text-sm">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer border border-transparent hover:border-border">
-                <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
-                  <FileText className="h-5 w-5" />
+              <div key={i} className="border-l-4 border-foreground pl-4 py-2 hover:bg-foreground/5 transition-colors">
+                <p className="font-bold text-foreground mb-1">&gt; INGEST: Frontend_Resume_2026.pdf</p>
+                <div className="flex justify-between items-center text-muted-foreground text-xs uppercase tracking-widest">
+                  <span>Status: Success [14 Nodes Extracted]</span>
+                  <span>T-2H</span>
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Frontend_Resume_2026.pdf</p>
-                  <p className="text-xs text-muted-foreground">Processed • Extracted 14 skills</p>
-                </div>
-                <span className="text-xs text-muted-foreground">2h ago</span>
               </div>
             ))}
           </div>
@@ -175,27 +200,25 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm"
+          className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8"
         >
-          <h2 className="font-medium mb-4 flex items-center gap-2"><Network className="h-5 w-5 text-secondary"/> Graph Updates</h2>
-          <div className="space-y-4">
+          <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-6 flex items-center gap-3 border-b-2 border-foreground pb-4">
+            <Network className="h-6 w-6"/> Topology
+          </h2>
+          <div className="space-y-4 font-mono text-sm">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-start gap-4 relative">
-                <div className="absolute left-[19px] top-8 bottom-[-16px] w-[2px] bg-border last:hidden" />
-                <div className="h-10 w-10 rounded-full bg-accent border-4 border-background flex items-center justify-center z-10 shrink-0">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                </div>
-                <div className="pt-2 pb-4">
-                  <p className="text-sm font-medium">New connection formed</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Linked <span className="text-foreground">React.js</span> to project <span className="text-foreground">IdentiTea Dashboard</span>
-                  </p>
+              <div key={i} className="border-l-4 border-foreground pl-4 py-2 hover:bg-foreground/5 transition-colors">
+                <p className="font-bold text-foreground mb-1">&gt; LINK: React.js &lt;--&gt; IdentiTea Dashboard</p>
+                <div className="flex justify-between items-center text-muted-foreground text-xs uppercase tracking-widest">
+                  <span>Edge Weight: +0.8</span>
+                  <span>Validated</span>
                 </div>
               </div>
             ))}
           </div>
         </motion.div>
       </div>
+      
     </div>
   )
 }

@@ -1,7 +1,6 @@
 fastapi
 uvicorn
 pydantic
-pydantic-settings
 python-dotenv
 neo4j
 qdrant-client
@@ -9,6 +8,9 @@ google-generativeai
 langchain
 langchain-google-genai
 llama-index
-PyMuPDF
 supabase
 python-multipart
+firebase-admin
+pydantic-settings
+PyMuPDF
+ 

@@ -1,18 +1,17 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 from typing import Optional
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     
-    # Clerk
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: Optional[str] = None
-    CLERK_SECRET_KEY: Optional[str] = None
+    # Firebase
+    FIREBASE_PROJECT_ID: str = "identitea"
     
     # Supabase / DB
     SUPABASE_URL: Optional[str] = None
     SUPABASE_ANON_KEY: Optional[str] = None
     SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
-    DATABASE_URL: Optional[str] = "postgresql://identitea:identitea@localhost:5432/identitea"
+    DATABASE_URL: Optional[str] = None
     
     # Neo4j
     NEO4J_URI: str = "neo4j+s://aura.databases.neo4j.io"
@@ -28,10 +27,9 @@ class Settings(BaseSettings):
     
     BACKEND_SECRET_KEY: str = "supersecretkey"
 
-    model_config = SettingsConfigDict(
-        env_file=".env.development" if ENVIRONMENT == "development" else ".env.production",
-        env_file_encoding="utf-8",
-        extra="ignore"
-    )
+    class Config:
+        env_file = ".env.development"
+        env_file_encoding = "utf-8"
+        extra = "ignore"
 
 settings = Settings()

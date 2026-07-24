@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { ArrowRight, UploadCloud, FileText, Network, Sparkles, BrainCircuit, CheckCircle2, Quote, MousePointer2, GitCommit, ShieldCheck, Target, TerminalSquare, Github, Twitter, Linkedin, Lock, User, Briefcase, GraduationCap, ArrowUpRight } from "lucide-react"
+import { ArrowRight, UploadCloud, FileText, Network, Sparkles, BrainCircuit, CheckCircle2, Quote, MousePointer2, GitCommit, ShieldCheck, Target, TerminalSquare, Lock, User, Briefcase, GraduationCap, ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { fadeIn, float, pulse } from "@/lib/animations"
 import { MilkyAurora } from "@/components/milky-aurora"
@@ -43,6 +43,7 @@ export default function LandingPage() {
             <Link href="#problem" className="hover:text-foreground transition-colors">The Problem</Link>
             <Link href="#usecases" className="hover:text-foreground transition-colors">Use Cases</Link>
             <Link href="#engine" className="hover:text-foreground transition-colors">Evidence Engine</Link>
+            <Link href="#security" className="hover:text-foreground transition-colors">Security Vault</Link>
           </nav>
           <div className="flex gap-4">
             <Link href="/sign-in">
@@ -358,7 +359,7 @@ export default function LandingPage() {
         </section>
 
         {/* 6. Security Vault - Brutalist borders */}
-        <section className="pt-10 pb-12 bg-background text-foreground overflow-hidden relative border-b-4 border-foreground">
+        <section id="security" className="scroll-mt-20 pt-10 pb-12 bg-background text-foreground overflow-hidden relative border-b-4 border-foreground">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
             <motion.div 
               initial={{ opacity: 0, x: -50 }}
