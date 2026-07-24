@@ -41,9 +41,9 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-background">
       <CustomCursor />
       <Sidebar />
-      <div className="pl-64 flex flex-col min-h-screen">
+      <div className="md:pl-64 flex flex-col min-h-screen">
         <TopNavbar />
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-8">
           {children}
         </main>
       </div>

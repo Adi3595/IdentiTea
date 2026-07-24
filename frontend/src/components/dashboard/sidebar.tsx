@@ -29,7 +29,7 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r-4 border-foreground bg-background">
+    <aside className="hidden md:block fixed left-0 top-0 z-40 h-screen w-64 border-r-4 border-foreground bg-background">
       <Link href="/" className="flex h-16 items-center gap-3 px-6 border-b-2 border-foreground hover:bg-foreground/5 transition-colors cursor-pointer group">
         <img src="/logo.svg" alt="IdentiTea Logo" className="w-8 h-8 group-hover:rotate-12 transition-transform duration-300" />
         <span className="font-[family-name:var(--font-black-ops)] text-xl tracking-tighter uppercase mt-1 text-foreground">
