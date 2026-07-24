@@ -69,7 +69,7 @@ export default function TimelinePage() {
                 <div className="flex items-center gap-2 font-bold uppercase tracking-widest text-xs text-muted-foreground mb-4">
                   <span>Logged via Engine</span>
                   <ArrowRight className="h-3 w-3" />
-                  <span className="text-green-500">Verified</span>
+                  <span className="text-green-500">Extracted</span>
                 </div>
                 <p className="font-mono text-sm leading-relaxed border-l-2 border-muted-foreground/30 pl-4 py-1">
                   {event.description}

@@ -127,6 +127,14 @@ async def get_auto_portfolio(current_user: dict = Depends(get_current_user)):
     portfolio = await identity_engine.generate_auto_portfolio(user_id)
     return portfolio
 
+@api_router.get("/portfolio/public/{user_id}")
+async def get_public_portfolio(user_id: str):
+    """
+    Unauthenticated endpoint for public viewing.
+    """
+    portfolio = await identity_engine.generate_auto_portfolio(user_id)
+    return portfolio
+
 @api_router.get("/career/gap-analysis")
 async def run_gap_analysis(target_role: str = "Software Engineer", current_user: dict = Depends(get_current_user)):
     """

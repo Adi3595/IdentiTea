@@ -168,15 +168,15 @@ export default function ResumeAnalysisPage() {
                 <div>
                   <div className="flex items-center gap-3 mb-4 border-b-2 border-foreground pb-2">
                     <ShieldCheck className="h-6 w-6 text-green-600" />
-                    <h3 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter text-green-600">Verified Skills</h3>
+                    <h3 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter text-green-600">Self-Reported Skills</h3>
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {result.current_skills_mapped > 0 ? (
                       <p className="font-mono text-sm uppercase font-bold text-foreground bg-green-600/10 p-4 border border-green-600 w-full">
-                        Your Knowledge Graph actively supports {result.current_skills_mapped} core competencies required for this role.
+                        Your Knowledge Graph extracted {result.current_skills_mapped} core competencies required for this role from your uploaded documents.
                       </p>
                     ) : (
-                      <span className="font-mono text-sm text-muted-foreground uppercase">No verified overlap detected in your graph.</span>
+                      <span className="font-mono text-sm text-muted-foreground uppercase">No overlap detected from your extracted documents.</span>
                     )}
                   </div>
                 </div>

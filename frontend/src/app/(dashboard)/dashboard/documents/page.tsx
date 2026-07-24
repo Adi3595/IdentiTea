@@ -96,8 +96,12 @@ export default function DocumentsPage() {
     <div className="space-y-8 max-w-4xl text-foreground">
       <CustomCursor />
       <div className="border-b-4 border-foreground pb-6">
-        <h1 className="font-[family-name:var(--font-black-ops)] text-4xl md:text-5xl tracking-tighter uppercase">Document Ingestion</h1>
-        <p className="text-muted-foreground uppercase tracking-widest font-bold text-sm mt-2">Upload resumes & certs to feed the Graph</p>
+        <div>
+          <h1 className="font-[family-name:var(--font-black-ops)] text-4xl md:text-5xl tracking-tighter uppercase flex items-center gap-4">
+            <UploadCloud className="h-10 w-10 text-foreground" /> Document Upload
+          </h1>
+          <p className="text-muted-foreground uppercase tracking-widest font-bold text-sm mt-2">Upload Resumes, Certificates, or Project Specs to feed the Graph</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -129,7 +133,7 @@ export default function DocumentsPage() {
             ) : (
               <>
                 <UploadCloud className={`h-16 w-16 mb-4 ${isDragging ? "text-foreground animate-bounce" : "text-muted-foreground"}`} />
-                <h3 className="font-bold uppercase tracking-widest mb-2 text-foreground">Drag & Drop Document</h3>
+                <h3 className="font-bold uppercase tracking-widest mb-2 text-foreground">Drag & Drop Resume, Cert, or Spec</h3>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">PDF, PNG, JPG up to 5MB</p>
               </>
             )}

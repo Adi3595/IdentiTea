@@ -1,15 +1,32 @@
-import { Globe, GitBranch, Network, Link as LinkIcon, AlertTriangle } from "lucide-react";
+"use client"
+import { Globe, GitBranch, Network, Link as LinkIcon, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-const integrations = [
-  { name: "GitHub", icon: GitBranch, status: "Connected", desc: "Syncs repositories, commits, and PRs." },
-  { name: "LinkedIn", icon: Network, status: "Disconnected", desc: "Syncs employment history and endorsements." },
-  { name: "Web3 Wallet", icon: Globe, status: "Disconnected", desc: "Required for decentralized identity publishing." },
+const initialIntegrations = [
+  { id: "github", name: "GitHub", icon: GitBranch, status: "Disconnected", desc: "Syncs repositories, commits, and PRs." },
+  { id: "linkedin", name: "LinkedIn", icon: Network, status: "Disconnected", desc: "Syncs employment history and endorsements." },
+  { id: "web3", name: "Web3 Wallet", icon: Globe, status: "Disconnected", desc: "Required for decentralized identity publishing." },
 ]
 
 export default function IntegrationsPage() {
+  const [integrations, setIntegrations] = useState(initialIntegrations);
+  const [connectingId, setConnectingId] = useState<string | null>(null);
+
+  const handleConnect = (id: string) => {
+    setConnectingId(id);
+    
+    // Simulate OAuth handshake for hackathon demo
+    setTimeout(() => {
+      setIntegrations(prev => prev.map(int => 
+        int.id === id ? { ...int, status: "Connected" } : int
+      ));
+      setConnectingId(null);
+    }, 2000);
+  }
+
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 text-foreground">
       
       <div className="border-b-4 border-foreground pb-6">
         <h1 className="font-[family-name:var(--font-black-ops)] text-4xl tracking-tighter uppercase">Integrations</h1>
@@ -27,13 +44,17 @@ export default function IntegrationsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {integrations.map((int, i) => (
+        {integrations.map((int, i) => {
+          const isConnecting = connectingId === int.id;
+          const isConnected = int.status === "Connected";
+          
+          return (
           <div key={i} className="bg-background border-4 border-foreground p-6 flex flex-col justify-between group hover:bg-foreground/5 transition-colors">
             <div>
               <div className="flex justify-between items-start mb-6">
                 <int.icon className="h-8 w-8 text-foreground" />
                 <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 border ${
-                  int.status === "Connected" ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-muted text-muted-foreground border-border"
+                  isConnected ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-muted text-muted-foreground border-border"
                 }`}>
                   {int.status}
                 </span>
@@ -43,15 +64,22 @@ export default function IntegrationsPage() {
             </div>
             
             <Button 
-              variant={int.status === "Connected" ? "outline" : "default"} 
+              disabled={isConnecting}
+              onClick={() => !isConnected && handleConnect(int.id)}
+              variant={isConnected ? "outline" : "default"} 
               className={`rounded-none w-full uppercase font-bold tracking-widest text-xs h-auto py-3 ${
-                int.status === "Connected" ? "border-2 border-foreground" : "bg-foreground text-background shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+                isConnected ? "border-2 border-foreground" : "bg-foreground text-background shadow-[4px_4px_0_var(--foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
               }`}
             >
-              <LinkIcon className="h-3 w-3 mr-2" /> {int.status === "Connected" ? "Configure" : "Connect"}
+              {isConnecting ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> 
+              ) : (
+                <LinkIcon className="h-3 w-3 mr-2" />
+              )}
+              {isConnecting ? "Connecting..." : isConnected ? "Configure" : "Connect"}
             </Button>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   )
