@@ -11,7 +11,7 @@ class AIExtractorService:
         if not self.is_mock:
             genai.configure(api_key=self.api_key)
             # Using the fast and powerful 1.5 Pro for highly accurate JSON extraction
-            self.model = genai.GenerativeModel("gemini-1.5-pro")
+            self.model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
     async def extract_metadata(self, text_content: str, filename: str) -> DocumentMetadata:
         """
