@@ -17,7 +17,7 @@ export default function DashboardPage() {
   const { data: health, isLoading } = useQuery({
     queryKey: ['backend-health'],
     queryFn: async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/health`)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/system-status`)
       if (!res.ok) throw new Error('Network response was not ok')
       return res.json()
     },

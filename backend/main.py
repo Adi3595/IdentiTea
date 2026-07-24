@@ -41,9 +41,9 @@ from core.audit import AuditLogMiddleware
 app.add_middleware(AuditLogMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 
-@app.get("/health")
+@app.get("/system-status")
 @limiter.limit("5/minute")
-async def health_check(request: Request):
+async def system_status_check(request: Request):
     return {"status": "ok", "environment": settings.ENVIRONMENT}
 
 app.include_router(api_router, prefix="/api")
