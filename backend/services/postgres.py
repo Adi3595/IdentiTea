@@ -69,5 +69,22 @@ class PostgresService:
         except Exception as e:
             logging.error(f"Error logging timeline event: {e}")
             return None
+    def log_audit_event(self, user_id: str, action: str, details: dict = None):
+        if self.is_mock:
+            logging.info(f"MOCK AUDIT: User {user_id} performed {action} with details {details}")
+            return True
+            
+        try:
+            data = {
+                "user_id": user_id,
+                "action": action,
+                "details": details or {}
+            }
+            # Requires an "audit_logs" table in Supabase
+            self.client.table("audit_logs").insert(data).execute()
+            return True
+        except Exception as e:
+            logging.error(f"Error logging audit event: {e}")
+            return False
 
 db = PostgresService()

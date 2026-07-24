@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, sendEmailVerification } from "firebase/auth";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function SignUpPage() {
@@ -45,7 +45,10 @@ export default function SignUpPage() {
     setError("");
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      if (userCredential.user) {
+        await sendEmailVerification(userCredential.user);
+      }
       // Firebase will update the user state and trigger the redirect to /dashboard
     } catch (err: any) {
       console.error("Sign Up Error:", err);

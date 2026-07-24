@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { AuthProvider } from "@/providers/auth-provider";
+import { JSONLD } from "@/components/json-ld";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -55,6 +56,15 @@ export default function RootLayout({
           <QueryProvider>
             <AuthProvider>
               {children}
+              <JSONLD 
+                data={{
+                  "@context": "https://schema.org",
+                  "@type": "WebSite",
+                  "name": "IdentiTea",
+                  "url": "https://identitea.app",
+                  "description": "Your Career. Brewed by AI."
+                }}
+              />
             </AuthProvider>
           </QueryProvider>
         </ThemeProvider>

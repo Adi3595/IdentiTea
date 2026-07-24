@@ -13,4 +13,5 @@ python-multipart
 firebase-admin
 pydantic-settings
 PyMuPDF
+slowapi
  

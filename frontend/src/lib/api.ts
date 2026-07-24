@@ -2,11 +2,12 @@ import { auth } from "./firebase";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
-export async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
+export async function fetchWithAuth(endpoint: string, options: RequestInit = {}, retryCount = 0): Promise<any> {
   // Try to get the current user's token
   let token = null;
   if (auth.currentUser) {
-    token = await auth.currentUser.getIdToken();
+    // If this is a retry, force refresh the token
+    token = await auth.currentUser.getIdToken(retryCount > 0);
   }
 
   const headers = new Headers(options.headers || {});
@@ -21,7 +22,12 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
   });
 
   if (!response.ok) {
-    let errorMsg = "API Error";
+    if (response.status === 401 && retryCount === 0 && auth.currentUser) {
+      console.warn("Token expired or unauthorized, attempting to refresh token...");
+      return fetchWithAuth(endpoint, options, 1);
+    }
+    
+    let errorMsg = `API Error: ${response.statusText}`;
     try {
       const data = await response.json();
       errorMsg = data.detail || errorMsg;
