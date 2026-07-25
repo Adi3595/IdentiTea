@@ -23,18 +23,52 @@ async def lifespan(app: FastAPI):
             conn = psycopg2.connect(settings.DATABASE_URL)
             cur = conn.cursor()
             
-            # user_settings
             cur.execute("""
+            CREATE TABLE IF NOT EXISTS documents (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                filename TEXT NOT NULL,
+                storage_path TEXT NOT NULL,
+                category TEXT,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
+            CREATE TABLE IF NOT EXISTS certificates (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                title TEXT NOT NULL,
+                issuer TEXT,
+                date TEXT,
+                document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
+            CREATE TABLE IF NOT EXISTS internships (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                role TEXT NOT NULL,
+                company TEXT NOT NULL,
+                duration TEXT,
+                document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
+            CREATE TABLE IF NOT EXISTS projects (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                technologies JSONB DEFAULT '[]'::jsonb,
+                github_url TEXT,
+                document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+            );
             CREATE TABLE IF NOT EXISTS user_settings (
                 user_id TEXT PRIMARY KEY,
                 theme TEXT DEFAULT 'system',
                 email_notifications BOOLEAN DEFAULT true,
+                profile JSONB DEFAULT '{}'::jsonb,
+                linkedin_url TEXT,
+                github_url TEXT,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
             );
-            """)
-            
-            # timeline_events
-            cur.execute("""
             CREATE EXTENSION IF NOT EXISTS "pgcrypto";
             CREATE TABLE IF NOT EXISTS timeline_events (
                 id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -45,10 +79,6 @@ async def lifespan(app: FastAPI):
                 date TEXT NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
             );
-            """)
-            
-            # audit_logs
-            cur.execute("""
             CREATE TABLE IF NOT EXISTS audit_logs (
                 id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                 user_id TEXT,
@@ -57,6 +87,13 @@ async def lifespan(app: FastAPI):
                 ip_address TEXT,
                 timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
             );
+            
+            -- Ensure columns exist in case tables were made earlier
+            ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS theme TEXT DEFAULT 'system';
+            ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS email_notifications BOOLEAN DEFAULT true;
+            ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS profile JSONB DEFAULT '{}'::jsonb;
+            ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS linkedin_url TEXT;
+            ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS github_url TEXT;
             """)
             
             conn.commit()
