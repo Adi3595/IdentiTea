@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import { fetchWithAuth } from "@/lib/api"
 import { CustomCursor } from "@/components/cursor"
 import { Network, Search } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 // Dynamically import to avoid window is not defined during SSR
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { ssr: false })
