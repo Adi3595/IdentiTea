@@ -88,12 +88,32 @@ async def lifespan(app: FastAPI):
                 timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
             );
             
-            -- Ensure columns exist in case tables were made earlier
             ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS theme TEXT DEFAULT 'system';
             ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS email_notifications BOOLEAN DEFAULT true;
             ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS profile JSONB DEFAULT '{}'::jsonb;
             ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS linkedin_url TEXT;
             ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS github_url TEXT;
+            
+            ALTER TABLE documents ADD COLUMN IF NOT EXISTS user_id TEXT;
+            ALTER TABLE documents ADD COLUMN IF NOT EXISTS filename TEXT;
+            ALTER TABLE documents ADD COLUMN IF NOT EXISTS storage_path TEXT;
+            ALTER TABLE documents ADD COLUMN IF NOT EXISTS category TEXT;
+            
+            ALTER TABLE certificates ADD COLUMN IF NOT EXISTS user_id TEXT;
+            ALTER TABLE certificates ADD COLUMN IF NOT EXISTS title TEXT;
+            ALTER TABLE certificates ADD COLUMN IF NOT EXISTS issuer TEXT;
+            ALTER TABLE certificates ADD COLUMN IF NOT EXISTS date TEXT;
+            
+            ALTER TABLE internships ADD COLUMN IF NOT EXISTS user_id TEXT;
+            ALTER TABLE internships ADD COLUMN IF NOT EXISTS role TEXT;
+            ALTER TABLE internships ADD COLUMN IF NOT EXISTS company TEXT;
+            ALTER TABLE internships ADD COLUMN IF NOT EXISTS duration TEXT;
+            
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS user_id TEXT;
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS name TEXT;
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS description TEXT;
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS technologies JSONB DEFAULT '[]'::jsonb;
+            ALTER TABLE projects ADD COLUMN IF NOT EXISTS github_url TEXT;
             """)
             
             conn.commit()
