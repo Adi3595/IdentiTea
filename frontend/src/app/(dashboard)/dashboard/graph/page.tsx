@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import dynamic from "next/dynamic"
-import { fetchWithAuth } from "@/lib/api"
 import { CustomCursor } from "@/components/cursor"
 import { Network, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTheme } from "next-themes"
 
 // Dynamically import to avoid window is not defined during SSR
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { ssr: false })
@@ -20,6 +20,11 @@ export default function GraphPage() {
   const [selectedNode, setSelectedNode] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const graphRef = useRef<any>(null)
+  
+  const { resolvedTheme } = useTheme();
+  
+  const fgColor = resolvedTheme === 'dark' ? '#f8f9fa' : '#0f0b0a';
+  const bgColor = resolvedTheme === 'dark' ? '#0f0b0a' : '#f8f9fa';
 
   useEffect(() => {
     // Resize observer
@@ -88,16 +93,7 @@ export default function GraphPage() {
   }, [view, fullGraphData]);
 
   const getNodeColor = (node: any) => {
-    const type = node.type || node.target_type;
-    switch (type) {
-      case "Skill": return "#ef4444"; // red-500
-      case "Project": return "#3b82f6"; // blue-500
-      case "Document": return "#10b981"; // emerald-500
-      case "Certificate": return "#f59e0b"; // amber-500
-      case "Internship": return "#8b5cf6"; // violet-500
-      case "User": return "#0f0b0a"; // foreground
-      default: return "#6b7280"; // gray-500
-    }
+    return fgColor;
   }
 
   return (
@@ -156,12 +152,13 @@ export default function GraphPage() {
               nodeLabel="label"
               nodeColor={getNodeColor}
               nodeRelSize={7}
-              linkColor={() => "rgba(100, 100, 100, 0.4)"}
+              linkColor={() => fgColor}
               linkDirectionalArrowLength={3.5}
               linkDirectionalArrowRelPos={1}
               linkDirectionalParticles={2}
               linkDirectionalParticleSpeed={(d: any) => 0.005}
               linkDirectionalParticleWidth={2}
+              linkDirectionalParticleColor={() => bgColor}
               backgroundColor="transparent"
               linkCurvature={0.25}
               onNodeClick={(node) => setSelectedNode(node)}
@@ -192,7 +189,7 @@ export default function GraphPage() {
                 ctx.font = `bold ${fontSize}px Inter, sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillStyle = isSelected ? getNodeColor(node) : '#0f0b0a';
+                ctx.fillStyle = isSelected ? fgColor : fgColor;
                 ctx.fillText(label, node.x, node.y + 14);
               }}
             />

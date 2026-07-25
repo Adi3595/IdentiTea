@@ -22,6 +22,7 @@ export default function SettingsPage() {
   });
   const [saving, setSaving] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
   // Mount theme safely
   useEffect(() => {
@@ -62,14 +63,17 @@ export default function SettingsPage() {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSaveStatus(null);
     try {
       await fetchWithAuth("/users/settings", {
         method: "POST",
         body: JSON.stringify({ profile })
       });
-      // Optionally show a success toast here
-    } catch (err) {
+      setSaveStatus({ type: 'success', message: 'Profile saved successfully!' });
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (err: any) {
       console.error("Failed to save profile", err);
+      setSaveStatus({ type: 'error', message: err.message || 'Failed to save profile. Ensure database is setup.' });
     } finally {
       setSaving(false);
     }
@@ -175,6 +179,12 @@ export default function SettingsPage() {
                     placeholder="Write a brief professional summary..." 
                   />
                 </div>
+
+                {saveStatus && (
+                  <div className={`p-4 border-2 font-bold uppercase tracking-widest text-xs ${saveStatus.type === 'success' ? 'border-green-500 text-green-500 bg-green-500/10' : 'border-destructive text-destructive bg-destructive/10'}`}>
+                    {saveStatus.message}
+                  </div>
+                )}
 
                 <div className="flex justify-end pt-2">
                   <Button 
