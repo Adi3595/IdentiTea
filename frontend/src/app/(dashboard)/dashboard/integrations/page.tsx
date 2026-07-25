@@ -7,7 +7,7 @@ import { fetchWithAuth } from "@/lib/api";
 
 const initialIntegrations = [
   { id: "github", name: "GitHub", icon: GitBranch, status: "Disconnected", desc: "Syncs repositories, commits, and PRs." },
-  { id: "linkedin", name: "LinkedIn", icon: Network, status: "Disconnected", desc: "Syncs employment history and endorsements." },
+  { id: "linkedin", name: "LinkedIn", icon: Network, status: "Disconnected", desc: "Links your LinkedIn profile to your Knowledge Graph." },
   { id: "web3", name: "Web3 Wallet", icon: Globe, status: "Disconnected", desc: "Required for decentralized identity publishing." },
 ]
 

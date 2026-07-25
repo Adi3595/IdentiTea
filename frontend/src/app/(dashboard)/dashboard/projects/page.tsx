@@ -6,7 +6,8 @@ import { fetchWithAuth } from "@/lib/api";
 
 interface Project {
   id: string;
-  title: string;
+  name?: string;
+  title?: string;
   description: string;
   technologies: string[];
 }
@@ -61,7 +62,7 @@ export default function ProjectsPage() {
                     </Button>
                   </div>
                 </div>
-                <h3 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-2">{project.title}</h3>
+                <h3 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter mb-2">{project.name || project.title}</h3>
                 <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-6">{project.description}</p>
               </div>
               

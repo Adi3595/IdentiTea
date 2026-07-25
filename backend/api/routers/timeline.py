@@ -16,7 +16,48 @@ class TimelineEvent(BaseModel):
 @router.get("/")
 async def get_timeline(current_user: dict = Depends(get_current_user)):
     user_id = current_user["uid"]
-    events = db.get_timeline_events(user_id)
+    
+    events = []
+    
+    # Fetch internships
+    try:
+        internships = db.get_internships(user_id)
+        for i in internships:
+            events.append({
+                "id": str(i.get("id")),
+                "event_type": "work",
+                "title": f"{i.get('role')} at {i.get('company')}",
+                "description": f"Worked as {i.get('role')} at {i.get('company')}",
+                "date": i.get("duration") or "Unknown Date"
+            })
+    except: pass
+    
+    # Fetch certificates
+    try:
+        certs = db.get_certificates(user_id)
+        for c in certs:
+            events.append({
+                "id": str(c.get("id")),
+                "event_type": "education",
+                "title": c.get("title"),
+                "description": f"Earned certificate from {c.get('issuer')}",
+                "date": c.get("date") or "Unknown Date"
+            })
+    except: pass
+    
+    # Fetch projects
+    try:
+        projects = db.get_projects(user_id)
+        for p in projects:
+            events.append({
+                "id": str(p.get("id")),
+                "event_type": "work",
+                "title": p.get("name"),
+                "description": p.get("description") or "Built project",
+                "date": "Recent" # Projects might not have dates, fallback
+            })
+    except: pass
+    
     return events
 
 @router.post("/")
