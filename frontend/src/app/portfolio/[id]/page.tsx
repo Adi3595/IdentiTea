@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { ShieldCheck, Network, Award, AppWindow, Loader2, Share2, Copy, ExternalLink, UserCircle, GraduationCap, Briefcase } from "lucide-react"
+import { ShieldCheck, Network, Award, AppWindow, Loader2, Share2, Copy, ExternalLink, UserCircle, GraduationCap, Briefcase, Clock } from "lucide-react"
 import { useParams } from "next/navigation"
 
 export default function PublicPortfolioPage() {
@@ -192,23 +192,65 @@ export default function PublicPortfolioPage() {
           </div>
         </section>
 
-        {/* CERTIFICATIONS */}
-        {portfolio.certifications?.length > 0 && (
+        {/* EXPERIENCE & TIMELINE */}
+        {portfolio.internships?.length > 0 && (
+          <section className="animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-600 fill-mode-both pb-8 pt-8">
+            <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4 mb-8">
+              <Clock className="h-6 w-6" />
+              <h2 className="font-[family-name:var(--font-black-ops)] text-2xl md:text-4xl uppercase tracking-tighter">Professional Timeline</h2>
+            </div>
+            
+            <div className="space-y-6 border-l-4 border-foreground/20 pl-6 ml-2 relative">
+              {portfolio.internships.map((exp: any, i: number) => (
+                <div key={i} className="relative">
+                  <div className="absolute -left-[37px] top-1 h-5 w-5 rounded-full bg-background border-4 border-foreground/50 z-10" />
+                  <div className="bg-background/40 backdrop-blur-lg border border-foreground/20 p-6 hover:border-foreground hover:bg-foreground/5 transition-all">
+                    <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-1">
+                      {exp.role || exp.title || "Experience"}
+                    </h3>
+                    <p className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">
+                      {exp.company || exp.organization} <span className="mx-2">•</span> {exp.duration || exp.date || "Present"}
+                    </p>
+                    {exp.description && (
+                      <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+                        {exp.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* CERTIFICATIONS & ACHIEVEMENTS */}
+        {(portfolio.certifications?.length > 0 || portfolio.achievements?.length > 0) && (
           <section className="animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700 fill-mode-both pb-24">
             <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4 mb-8">
               <Award className="h-6 w-6" />
               <h2 className="font-[family-name:var(--font-black-ops)] text-2xl md:text-4xl uppercase tracking-tighter">Certifications & Awards</h2>
             </div>
             
-            <div className="space-y-4">
-              {portfolio.certifications.map((cert: any, i: number) => (
-                <div key={i} className="flex items-center gap-4 bg-background/30 backdrop-blur-sm border border-foreground/10 p-4 hover:bg-foreground/5 hover:border-foreground/30 transition-all">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {portfolio.certifications?.map((cert: any, i: number) => (
+                <div key={`cert-${i}`} className="flex items-center gap-4 bg-background/30 backdrop-blur-sm border border-foreground/10 p-4 hover:bg-foreground/5 hover:border-foreground/30 transition-all">
                   <div className="h-10 w-10 bg-foreground/10 rounded flex items-center justify-center shrink-0">
                     <Award className="h-5 w-5 text-foreground" />
                   </div>
                   <div>
                     <h3 className="font-bold uppercase tracking-widest text-sm">{cert.name || cert.label}</h3>
                     <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Verified Credential</p>
+                  </div>
+                </div>
+              ))}
+              {portfolio.achievements?.map((achieve: any, i: number) => (
+                <div key={`achieve-${i}`} className="flex items-center gap-4 bg-background/30 backdrop-blur-sm border border-foreground/10 p-4 hover:bg-foreground/5 hover:border-foreground/30 transition-all">
+                  <div className="h-10 w-10 bg-foreground/10 rounded flex items-center justify-center shrink-0">
+                    <Award className="h-5 w-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold uppercase tracking-widest text-sm">{achieve.title || achieve.name}</h3>
+                    <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">{achieve.event || "Award/Achievement"}</p>
                   </div>
                 </div>
               ))}

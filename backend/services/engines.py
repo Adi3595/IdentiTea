@@ -102,6 +102,8 @@ class IdentityEngine:
             skills = await graph_service.get_user_skills(user_id=user_id)
             projects = await graph_service.get_user_projects(user_id=user_id)
             certs = await graph_service.get_user_certificates(user_id=user_id)
+            internships = await graph_service.get_user_internships(user_id=user_id)
+            achievements = await graph_service.get_user_achievements(user_id=user_id)
             
             # Fetch custom profile data
             settings = db.get_user_settings(user_id) or {}
@@ -117,9 +119,11 @@ class IdentityEngine:
                     "education": profile.get("education", ""),
                     "linkedin_url": linkedin_url,
                 },
-                "highlight_projects": projects[:3] if projects else [],
-                "core_skills": skills[:10] if skills else [],
+                "highlight_projects": projects[:5] if projects else [],
+                "core_skills": skills[:15] if skills else [],
                 "certifications": certs if certs else [],
+                "internships": internships if internships else [],
+                "achievements": achievements if achievements else [],
                 "seo_meta": {
                     "title": f"Portfolio | {len(skills) if skills else 0} Skills",
                     "description": "Auto-generated knowledge graph portfolio."

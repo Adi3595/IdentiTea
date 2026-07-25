@@ -29,7 +29,7 @@ export default function DashboardPage() {
     queryKey: ['identity-score'],
     queryFn: async () => {
       if (!user) return { score: 0 };
-      return fetchWithAuth('/identity/score')
+      return fetchWithAuth('/users/identity-score')
     },
     refetchInterval: 10000,
     enabled: !!user,
@@ -39,7 +39,7 @@ export default function DashboardPage() {
     queryKey: ['portfolio-auto'],
     queryFn: async () => {
       if (!user) return null;
-      return fetchWithAuth('/portfolio/auto')
+      return fetchWithAuth(`/portfolio/public/${user.uid}`)
     },
     enabled: !!user,
   })
