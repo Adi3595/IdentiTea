@@ -28,12 +28,28 @@ The UI/UX is built on a strict, 2-color rule:
 - We rely on harsh geometric borders, solid 4px lines, and aggressive drop-shadows.
 - **Dark Mode:** Notice how the entire UI perfectly inverts. Even our SVG logo and the D3.js Knowledge Graph nodes dynamically invert their colors without introducing any tertiary shades. 
 
-## 🛠️ Technology Stack
-- **Frontend:** Next.js 15, React 19, Tailwind CSS (Vanilla CSS for strict brutalism), Framer Motion, Firebase Auth.
-- **Backend:** Python FastAPI, Uvicorn, Google Generative AI (Gemini), PyMuPDF.
-- **Databases:** 
-  - **Supabase (PostgreSQL):** For relational entities, user settings, timelines, and blob storage.
-  - **Neo4j (AuraDB):** For the highly connected, multi-hop Knowledge Graph relationships.
+## 🛠️ Technologies & Tools
+
+We carefully selected our tech stack to balance performance, AI capabilities, and complex data relationships.
+
+### **Frontend (The Interface)**
+- **Next.js 15 & React 19:** Provided the robust App Router framework for our multi-page dashboard, allowing for seamless client-side interactivity and optimized loading.
+- **Tailwind CSS & Vanilla CSS:** Used to enforce our strict brutalist design system (hard corners, 4px strokes, solid `#0f0b0a` and `#f8f9fa` color palette).
+- **Framer Motion:** Used to add subtle micro-animations and page transitions to make the brutalist design feel "alive" without breaking the aesthetic.
+- **D3.js / React Force Graph:** Powered the interactive, force-directed Knowledge Graph visualization on the frontend, allowing users to physically drag and explore their data nodes.
+- **Firebase Authentication:** Handled secure OAuth logins (Google, GitHub) without requiring us to build a custom credential system.
+
+### **Backend (The Evidence Engine)**
+- **Python & FastAPI:** Chosen for its blazing-fast asynchronous capabilities and native integration with AI/ML Python libraries.
+- **Google Generative AI (Gemini 1.5 Flash):** The brain of our extraction engine. We used Gemini's low-latency capabilities to parse raw document text and output highly structured JSON containing verifiable skills, confidence scores, and entity categorizations.
+- **PyMuPDF:** A lightweight, lightning-fast PDF parsing library used to extract text streams from user-uploaded documents before feeding them to Gemini.
+- **Uvicorn:** Handled the ASGI server duties to serve our FastAPI endpoints in production.
+
+### **Databases & Infrastructure**
+- **Supabase (PostgreSQL & Storage):** Served as our primary relational database. It stores user profiles, integration settings, audit logs, and the tabular extraction data (Internships, Projects, Certificates). We also utilized **Supabase Storage** to securely host the raw uploaded PDF documents.
+- **Neo4j (AuraDB):** The backbone of the Knowledge Graph. Traditional relational databases fail at traversing complex, multi-hop professional relationships. Neo4j allowed us to write Cypher queries to instantly find connections like `(User)-[:HAS_SKILL]->(Skill)<-[:MENTIONS_SKILL]-(Document)`.
+- **Render:** Hosted our Python FastAPI backend for reliable, continuous deployment.
+- **Vercel:** Hosted our Next.js frontend, providing edge-network speed globally.
 
 ## 🚀 How to Test (Live Demo)
 We have deployed the application so you don't have to build it locally!
