@@ -112,8 +112,8 @@ class GraphService:
         OPTIONAL MATCH (n1)-[r2]->(n2)
         RETURN 
             elementId(u) as u_id,
-            elementId(n1) as n1_id, type(r1) as r1_type, labels(n1)[0] as n1_label, coalesce(n1.displayName, n1.title, n1.name, 'Node') as n1_name,
-            elementId(n2) as n2_id, type(r2) as r2_type, labels(n2)[0] as n2_label, coalesce(n2.displayName, n2.title, n2.name, 'Node') as n2_name
+            elementId(n1) as n1_id, type(r1) as r1_type, coalesce(n1.category, labels(n1)[0]) as n1_label, coalesce(n1.displayName, n1.title, n1.name, 'Node') as n1_name,
+            elementId(n2) as n2_id, type(r2) as r2_type, coalesce(n2.category, labels(n2)[0]) as n2_label, coalesce(n2.displayName, n2.title, n2.name, 'Node') as n2_name
         """
         try:
             async with self.driver.session() as session:

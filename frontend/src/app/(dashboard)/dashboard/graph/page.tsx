@@ -10,7 +10,9 @@ import { Network, Search } from "lucide-react"
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { ssr: false })
 
 export default function GraphPage() {
+  const [fullGraphData, setFullGraphData] = useState<{nodes: any[], links: any[]}>({ nodes: [], links: [] })
   const [graphData, setGraphData] = useState<{nodes: any[], links: any[]}>({ nodes: [], links: [] })
+  const [view, setView] = useState("all") // "all", "Skill", "Project", "Internship"
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
@@ -55,7 +57,7 @@ export default function GraphPage() {
           label: e.label || e.relationship
         }))
 
-        setGraphData({ nodes, links })
+        setFullGraphData({ nodes, links })
       } catch (err: any) {
         setError(err.message || "Failed to load graph")
       } finally {
@@ -64,6 +66,25 @@ export default function GraphPage() {
     }
     loadGraph()
   }, [])
+
+  useEffect(() => {
+    if (view === "all" || fullGraphData.nodes.length === 0) {
+      setGraphData(fullGraphData);
+      return;
+    }
+
+    const filteredNodes = fullGraphData.nodes.filter(n => n.type === view || n.type === "User");
+    const nodeIds = new Set(filteredNodes.map(n => n.id));
+    
+    // Filter links where both source and target exist in the filtered nodes
+    const filteredLinks = fullGraphData.links.filter(l => {
+      const sourceId = l.source.id || l.source;
+      const targetId = l.target.id || l.target;
+      return nodeIds.has(sourceId) && nodeIds.has(targetId);
+    });
+
+    setGraphData({ nodes: filteredNodes, links: filteredLinks });
+  }, [view, fullGraphData]);
 
   const getNodeColor = (node: any) => {
     const type = node.type || node.target_type;
@@ -89,13 +110,17 @@ export default function GraphPage() {
           <p className="text-muted-foreground uppercase tracking-widest font-bold text-sm mt-2">Interactive Structural Web</p>
         </div>
         
-        <div className="hidden md:flex items-center border-2 border-foreground bg-background px-4 py-2 w-64 shadow-[4px_4px_0_var(--foreground)]">
-          <Search className="h-4 w-4 mr-2" />
-          <input 
-            type="text" 
-            placeholder="SEARCH NODES..." 
-            className="bg-transparent border-none outline-none text-xs font-bold font-mono w-full uppercase"
-          />
+        <div className="hidden md:flex items-center gap-2">
+          {["all", "Skill", "Project", "Internship"].map(v => (
+            <Button 
+              key={v}
+              variant="outline"
+              onClick={() => setView(v)}
+              className={`rounded-none border-2 border-foreground uppercase font-bold tracking-widest text-xs h-auto py-2 transition-all ${view === v ? 'bg-foreground text-background' : 'hover:bg-foreground/10'}`}
+            >
+              {v === "all" ? "Full Graph" : `${v}s`}
+            </Button>
+          ))}
         </div>
       </div>
 
