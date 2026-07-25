@@ -10,7 +10,7 @@ router = APIRouter()
 
 # Initialize Gemini
 genai.configure(api_key=settings.GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel('gemini-3.5-flash')
 
 @router.post("/suggest")
 async def get_career_suggestions(
@@ -61,7 +61,12 @@ async def get_career_suggestions(
         DO NOT include markdown formatting like ```json in the output, just the raw JSON object.
         """
         
-        response = model.generate_content(prompt)
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json"
+            )
+        )
         text = response.text.strip()
         if text.startswith("```json"):
             text = text[7:-3].strip()

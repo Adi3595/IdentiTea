@@ -35,6 +35,14 @@ export default function GraphPage() {
   }, [containerRef])
 
   useEffect(() => {
+    if (graphRef.current) {
+      // Increase repulsion so nodes don't overlap as much
+      graphRef.current.d3Force('charge').strength(-400);
+      graphRef.current.d3Force('link').distance(100);
+    }
+  }, [graphData]);
+
+  useEffect(() => {
     const loadGraph = async () => {
       try {
         const data = await fetchWithAuth("/graph")
@@ -58,25 +66,20 @@ export default function GraphPage() {
   }, [])
 
   const getNodeColor = (node: any) => {
-    if (node.type === "person" || node.label === "You") return "#ef4444" // Neo Red
-    if (node.label === "Skill" || node.type === "skill" || node.target_type === "Skill") return "#a855f7" // Purple
-    if (node.label === "Technology" || node.type === "tech" || node.target_type === "Technology") return "#f59e0b" // Amber
-    if (node.label === "Project" || node.target_type === "Project" || node.type === "project") return "#10b981" // Emerald
-    if (node.label === "Certification") return "#3b82f6" // Blue
-    return "#525252" // Neutral
+    const type = node.type || node.target_type;
+    switch (type) {
+      case "Skill": return "#ef4444"; // red-500
+      case "Project": return "#3b82f6"; // blue-500
+      case "Document": return "#10b981"; // emerald-500
+      case "Certificate": return "#f59e0b"; // amber-500
+      case "Internship": return "#8b5cf6"; // violet-500
+      case "User": return "#0f0b0a"; // foreground
+      default: return "#6b7280"; // gray-500
+    }
   }
 
-  useEffect(() => {
-    if (graphRef.current && graphData.nodes.length > 0) {
-      // Increase repulsion to spread nodes out more
-      graphRef.current.d3Force('charge').strength(-400)
-      // Increase link distance
-      graphRef.current.d3Force('link').distance(120)
-    }
-  }, [graphData])
-
   return (
-    <div className="space-y-6 max-w-6xl mx-auto h-[calc(100vh-100px)] flex flex-col text-foreground relative">
+    <div className="h-[calc(100vh-6rem)] flex flex-col gap-6 text-foreground relative">
       <CustomCursor />
       <div className="border-b-4 border-foreground pb-6 shrink-0 flex items-end justify-between">
         <div>
@@ -122,6 +125,8 @@ export default function GraphPage() {
               width={dimensions.width}
               height={dimensions.height}
               graphData={graphData}
+              dagMode="radialout"
+              dagLevelDistance={80}
               nodeLabel="label"
               nodeColor={getNodeColor}
               nodeRelSize={7}

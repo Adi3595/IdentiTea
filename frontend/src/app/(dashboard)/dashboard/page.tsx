@@ -57,9 +57,9 @@ export default function DashboardPage() {
   const identityScoreData = [{ name: "Score", value: score, fill: "var(--foreground)" }]
 
   const stats = [
-    { label: "Verified Skills", value: portfolioData?.skills?.length || "0", icon: ShieldCheck },
-    { label: "Projects", value: portfolioData?.projects?.length || "0", icon: Network },
-    { label: "Certificates", value: portfolioData?.certificates?.length || "0", icon: Award },
+    { label: "Verified Skills", value: portfolioData?.core_skills?.length || "0", icon: ShieldCheck },
+    { label: "Projects", value: portfolioData?.highlight_projects?.length || "0", icon: Network },
+    { label: "Certificates", value: portfolioData?.certifications?.length || "0", icon: Award },
     { label: "Internships", value: portfolioData?.internships?.length || "0", icon: Briefcase },
   ]
 
