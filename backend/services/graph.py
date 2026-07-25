@@ -168,7 +168,7 @@ class GraphService:
 
     async def get_user_projects(self, user_id: str):
         if self.is_mock:
-            return [{"id": "p1", "title": "MemoryVerse", "description": "Graph project"}]
+            return [{"id": "p1", "title": "IdentiTea", "description": "Graph project"}]
         query = """
         MATCH (u:User {id: $user_id})-[:OWNS_DOCUMENT]->(p:Document)
         WHERE p.category = 'Project'

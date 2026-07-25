@@ -23,7 +23,9 @@ async def sync_github(
         raise HTTPException(status_code=500, detail=str(e))
 
 from services.postgres import db
+from services.linkedin import linkedin_service
 from datetime import datetime
+import asyncio
 
 @router.post("/linkedin")
 async def connect_linkedin(
@@ -37,8 +39,12 @@ async def connect_linkedin(
     try:
         user_id = current_user["uid"]
         
-        # In a real production app, we would authenticate with OAuth or use an API to scrape the profile.
-        # For this hackathon, we simply log that they linked their profile.
+        # Save to user settings immediately
+        settings = db.get_user_settings(user_id) or {}
+        settings["linkedin_url"] = url
+        db.update_user_settings(user_id, settings)
+        
+        # Log event
         db.log_timeline_event(
             user_id=user_id,
             event_type="integration",
@@ -47,12 +53,10 @@ async def connect_linkedin(
             date=datetime.utcnow().isoformat() + "Z"
         )
         
-        # Save to user settings
-        settings = db.get_user_settings(user_id) or {}
-        settings["linkedin_url"] = url
-        db.update_user_settings(user_id, settings)
+        # Trigger async scraping in background
+        asyncio.create_task(linkedin_service.scrape_and_sync(url, user_id))
         
-        return {"status": "success", "message": "LinkedIn profile connected"}
+        return {"status": "success", "message": "LinkedIn profile connected. Syncing data..."}
     except Exception as e:
         logging.error(f"LinkedIn Connect Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
