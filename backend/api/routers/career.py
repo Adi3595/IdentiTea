@@ -65,11 +65,12 @@ async def get_career_suggestions(
             model='gemini-3.6-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
-                response_mime_type="text/plain",
+                response_mime_type="application/json",
                 temperature=0.7
             )
         )
         text = response.text.strip()
+        # The model should now return raw json, but just in case:
         if text.startswith("```json"):
             text = text[7:-3].strip()
         elif text.startswith("```"):
@@ -79,4 +80,6 @@ async def get_career_suggestions(
         
     except Exception as e:
         logging.error(f"Error generating career suggestions: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate career suggestions")
+        import traceback
+        trace = traceback.format_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to generate career suggestions: {str(e)} - {trace}")
