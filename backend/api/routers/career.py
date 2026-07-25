@@ -62,7 +62,7 @@ async def get_career_suggestions(
         """
         
         response = await client.aio.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-3.6-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="text/plain",

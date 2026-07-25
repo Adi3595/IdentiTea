@@ -12,7 +12,7 @@ class IdentityEngine:
         self.is_mock = not bool(self.api_key)
         if not self.is_mock:
             self.client = genai.Client(api_key=self.api_key)
-            self.model_name = "gemini-2.0-flash"
+            self.model_name = "gemini-3.6-flash"
 
     async def calculate_identity_score(self, user_id: str) -> dict:
         """

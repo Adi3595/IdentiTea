@@ -36,12 +36,9 @@ class AIExtractorService:
             )
 
         # List of models to try in case of rate limits or missing models
-        # Strictly avoiding 1.x models per user request
         fallback_models = [
-            "gemini-2.0-flash",
-            "gemini-2.0-flash-exp",
-            "gemini-2.0-pro-exp",
-            "gemini-2.5-flash"
+            "gemini-3.6-flash",
+            "gemini-3.5-flash-lite"
         ]
         
         prompt = f"""
