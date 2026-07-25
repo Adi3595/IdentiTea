@@ -17,7 +17,7 @@ export default function InternshipsPage() {
   useEffect(() => {
     async function loadInternships() {
       try {
-        const data = await fetchWithAuth("/users/internships");
+        const data = await fetchWithAuth("/graph-data/internships");
         setInternships(data);
       } catch (err) {
         console.error("Failed to load internships", err);

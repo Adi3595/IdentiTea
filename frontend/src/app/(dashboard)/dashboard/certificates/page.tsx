@@ -19,7 +19,7 @@ export default function CertificatesPage() {
   useEffect(() => {
     async function loadCertificates() {
       try {
-        const data = await fetchWithAuth("/users/certificates");
+        const data = await fetchWithAuth("/graph-data/certificates");
         setCertificates(data);
       } catch (err) {
         console.error("Failed to load certificates", err);

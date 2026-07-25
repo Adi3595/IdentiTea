@@ -77,22 +77,9 @@ async def upload_document(
         # 4. Extract Structured Data with Gemini
         metadata = await ai_extractor_service.extract_metadata(extracted_text, file.filename)
         
-        # 5. Insert Document Metadata to Postgres
-        doc_record = db.insert_document(user_id, file.filename, storage_path, metadata.category)
-        if not doc_record:
-            raise Exception("Failed to insert document into database.")
-            
-        doc_id = str(doc_record["id"])
-        
-        # 6. Insert Specific Entity to Postgres based on Category
-        category_lower = metadata.category.lower()
-        if "cert" in category_lower:
-            db.insert_certificate(user_id, metadata.title or "Unknown", metadata.organization or "Unknown", metadata.date or "Unknown", doc_id)
-        elif "intern" in category_lower or "exp" in category_lower:
-            db.insert_internship(user_id, metadata.title or "Unknown", metadata.organization or "Unknown", metadata.date or "Unknown", doc_id)
-        elif "project" in category_lower or "readme" in file.filename.lower():
-            techs = [t.name for t in metadata.technologies]
-            db.insert_project(user_id, metadata.title or "Unknown", metadata.summary or "", techs, doc_id)
+        # 5. We bypass Postgres insertion for these entities
+        # Just generate a random UUID for the neo4j document node
+        doc_id = str(uuid.uuid4())
             
         # 7. Insert to Neo4j Knowledge Graph
         await graph_service.insert_document_graph(doc_id, metadata, user_id)
