@@ -14,6 +14,22 @@ router = APIRouter()
 MAX_FILE_SIZE = 5 * 1024 * 1024 # 5 MB
 ALLOWED_MIME_TYPES = ["application/pdf", "image/png", "image/jpeg", "text/markdown", "text/plain"]
 
+@router.get("/test_insert")
+async def test_insert():
+    try:
+        from services.postgres import db
+        data = {
+            "user_id": "test_user_id",
+            "filename": "test.pdf",
+            "storage_path": "mock/test.pdf",
+            "category": "Project"
+        }
+        res = db.client.table("documents").insert(data).execute()
+        return {"status": "success", "data": res.data}
+    except Exception as e:
+        import traceback
+        return {"status": "error", "message": str(e), "traceback": traceback.format_exc()}
+
 async def scan_for_viruses(content: bytes) -> bool:
     # Placeholder for a real virus scan
     return True
