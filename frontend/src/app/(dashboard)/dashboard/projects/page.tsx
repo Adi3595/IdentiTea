@@ -10,6 +10,7 @@ interface Project {
   title?: string;
   description: string;
   technologies: string[];
+  github_url?: string;
 }
 
 export default function ProjectsPage() {
@@ -54,9 +55,13 @@ export default function ProjectsPage() {
                 <div className="flex justify-between items-start mb-4">
                   <AppWindow className="h-8 w-8 text-foreground" />
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-none border-2 border-transparent hover:border-foreground">
-                      <GitBranch className="h-4 w-4" />
-                    </Button>
+                    {project.github_url && (
+                      <a href={project.github_url} target="_blank" rel="noopener noreferrer">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-none border-2 border-transparent hover:border-foreground">
+                          <GitBranch className="h-4 w-4" />
+                        </Button>
+                      </a>
+                    )}
                     <Button variant="ghost" size="icon" className="h-8 w-8 rounded-none border-2 border-transparent hover:border-foreground">
                       <ExternalLink className="h-4 w-4" />
                     </Button>

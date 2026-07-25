@@ -72,7 +72,8 @@ class GithubService:
                         name=repo.get("name"),
                         description=metadata.summary,
                         technologies=tech_names,
-                        document_id=None # No physical document
+                        document_id=None, # No physical document
+                        github_url=repo.get("html_url")
                     )
                     
                     processed_count += 1
