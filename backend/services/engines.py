@@ -5,14 +5,11 @@ import json
 from google import genai
 from google.genai import types
 from core.config import settings
+from services.gemini import generate_content_with_fallback
 
 class IdentityEngine:
     def __init__(self):
-        self.api_key = settings.GEMINI_API_KEY
-        self.is_mock = not bool(self.api_key)
-        if not self.is_mock:
-            self.client = genai.Client(api_key=self.api_key)
-            self.model_name = "gemini-3.6-flash"
+        self.is_mock = not bool(settings.GEMINI_API_KEY)
 
     async def calculate_identity_score(self, user_id: str) -> dict:
         """
@@ -83,12 +80,11 @@ class IdentityEngine:
         ]
         """
         try:
-            response = await self.client.aio.models.generate_content(
-                model=self.model_name,
+            response = await generate_content_with_fallback(
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    temperature=0.7
+                    temperature=0.3
                 )
             )
             return json.loads(response.text)
@@ -171,12 +167,11 @@ class IdentityEngine:
         """
         
         try:
-            response = await self.client.aio.models.generate_content(
-                model=self.model_name,
+            response = await generate_content_with_fallback(
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    temperature=0.2
+                    temperature=0.5
                 )
             )
             return json.loads(response.text)

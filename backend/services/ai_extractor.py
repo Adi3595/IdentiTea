@@ -1,6 +1,7 @@
 import json
 from google import genai
 from google.genai import types
+from services.gemini import generate_content_with_fallback
 from core.config import settings
 from models.document import DocumentMetadata, ExtractedEntity
 
@@ -8,9 +9,6 @@ class AIExtractorService:
     def __init__(self):
         self.api_key = settings.GEMINI_API_KEY
         self.is_mock = not bool(self.api_key)
-        
-        if not self.is_mock:
-            self.client = genai.Client(api_key=self.api_key)
 
     async def extract_metadata(self, text_content: str, filename: str) -> DocumentMetadata:
         """
@@ -35,12 +33,6 @@ class AIExtractorService:
                 confidence_score=0.90
             )
 
-        # List of models to try in case of rate limits or missing models
-        fallback_models = [
-            "gemini-3.6-flash",
-            "gemini-3.5-flash-lite"
-        ]
-        
         prompt = f"""
         You are an advanced NLP Parsing Engine for an AI Knowledge Graph.
         Your job is to read the following text extracted from a document ({filename}) and extract concrete skills, technologies, and metadata.
@@ -67,29 +59,21 @@ class AIExtractorService:
         \"\"\"
         """
         
-        last_error = None
-        for model_name in fallback_models:
-            try:
-                print(f"Attempting extraction with model: {model_name}...")
-                response = await self.client.aio.models.generate_content(
-                    model=model_name,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json",
-                        temperature=0.1
-                    )
+        try:
+            print("Attempting extraction with Gemini fallback models...")
+            response = await generate_content_with_fallback(
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=0.2
                 )
-                
-                parsed_data = json.loads(response.text)
-                print(f"Successfully extracted data using {model_name}")
-                return DocumentMetadata(**parsed_data)
-                
-            except Exception as e:
-                print(f"Model {model_name} failed: {str(e)}. Switching to next model...")
-                last_error = str(e)
-                continue
-                
-        # If all models fail
-        raise ValueError(f"All fallback models failed. Last error: {last_error}")
+            )
+            
+            parsed_data = json.loads(response.text)
+            print("Successfully extracted data")
+            return DocumentMetadata(**parsed_data)
+            
+        except Exception as e:
+            raise ValueError(f"AI extraction failed: {str(e)}")
 
 ai_extractor_service = AIExtractorService()

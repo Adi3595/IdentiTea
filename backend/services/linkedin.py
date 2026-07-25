@@ -2,19 +2,17 @@ import httpx
 import re
 import json
 import logging
+import time
 from google import genai
 from google.genai import types
 from core.config import settings
 from services.graph import graph_service
+from services.gemini import generate_content_with_fallback
 
 class LinkedinService:
     def __init__(self):
         self.api_key = settings.GEMINI_API_KEY
-        if self.api_key:
-            self.client = genai.Client(api_key=self.api_key)
-            self.model_name = 'gemini-3.6-flash'
-        else:
-            self.client = None
+        self.is_mock = not bool(self.api_key)
 
     async def scrape_and_sync(self, url: str, user_id: str) -> dict:
         """
@@ -42,7 +40,7 @@ class LinkedinService:
             # Truncate text to avoid blowing up token limits, usually profile info is in the first half
             text = text[:15000]
 
-            if self.client:
+            if not self.is_mock:
                 prompt = f"""
                 You are a data extraction AI. Read the following text extracted from a LinkedIn profile URL: {url}
                 
@@ -58,8 +56,7 @@ class LinkedinService:
                 }}
                 """
                 
-                ai_response = await self.client.aio.models.generate_content(
-                    model=self.model_name,
+                ai_response = await generate_content_with_fallback(
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         response_mime_type="application/json"
