@@ -1,5 +1,6 @@
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from core.config import settings
 from models.document import DocumentMetadata, ExtractedEntity
 
@@ -9,9 +10,7 @@ class AIExtractorService:
         self.is_mock = not bool(self.api_key)
         
         if not self.is_mock:
-            genai.configure(api_key=self.api_key)
-            # Using the fast and powerful 1.5 Flash for highly accurate JSON extraction
-            self.model = genai.GenerativeModel("gemini-1.5-flash")
+            self.client = genai.Client(api_key=self.api_key)
 
     async def extract_metadata(self, text_content: str, filename: str) -> DocumentMetadata:
         """
@@ -40,9 +39,9 @@ class AIExtractorService:
         # Strictly avoiding 1.x models per user request
         fallback_models = [
             "gemini-2.0-flash",
+            "gemini-2.0-flash-exp",
             "gemini-2.0-pro-exp",
-            "gemini-2.5-flash",
-            "gemini-3.0-flash"
+            "gemini-2.5-flash"
         ]
         
         prompt = f"""
@@ -75,10 +74,10 @@ class AIExtractorService:
         for model_name in fallback_models:
             try:
                 print(f"Attempting extraction with model: {model_name}...")
-                model = genai.GenerativeModel(model_name)
-                response = await model.generate_content_async(
-                    prompt,
-                    generation_config=genai.GenerationConfig(
+                response = await self.client.aio.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
                         response_mime_type="application/json",
                         temperature=0.1
                     )

@@ -4,7 +4,7 @@ pydantic
 python-dotenv
 neo4j
 qdrant-client
-google-generativeai
+google-genai
 langchain
 langchain-google-genai
 llama-index
