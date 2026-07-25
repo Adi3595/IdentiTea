@@ -61,12 +61,7 @@ async def get_career_suggestions(
         DO NOT include markdown formatting like ```json in the output, just the raw JSON object.
         """
         
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.GenerationConfig(
-                response_mime_type="application/json"
-            )
-        )
+        response = model.generate_content(prompt)
         text = response.text.strip()
         if text.startswith("```json"):
             text = text[7:-3].strip()

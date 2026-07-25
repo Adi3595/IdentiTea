@@ -171,7 +171,7 @@ export default function PublicPortfolioPage() {
               >
                 <div>
                   <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-3">
-                    {project.name || project.label}
+                    {project.title || project.name || project.label || "Unnamed Project"}
                   </h3>
                   {project.description && (
                     <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-3">
