@@ -6,7 +6,8 @@ import { fetchWithAuth } from "@/lib/api";
 
 interface Certificate {
   id: string;
-  name: string;
+  name?: string;
+  title?: string;
   issuer: string;
   verified_skills: string[];
 }
@@ -54,7 +55,7 @@ export default function CertificatesPage() {
                   <Award className="h-8 w-8 text-background" />
                 </div>
                 <div>
-                  <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-1">{cert.name}</h3>
+                  <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-1">{cert.title || cert.name}</h3>
                   <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                     <span>{cert.issuer}</span>
                   </div>
