@@ -6,9 +6,9 @@ Our application relies on two distinctly different database paradigms operating 
 This layer acts as the absolute source of truth for the application's mechanical operations.
 
 ### Key Entities
-- **Users**: (Managed by Firebase natively, but a shadow copy or extended profile can exist here).
-- **Documents**: Tracks `document_id`, `filename`, `mime_type`, `size`, `upload_timestamp`, and `user_id`.
-- **Audit Logs**: A strict, append-only table recording every state mutation (POST/PUT/DELETE) with `user_id`, `action`, `endpoint`, `ip_address`, and `timestamp`.
+- **user_settings**: Stores user configuration, theme preferences, and full `profile` JSON data (name, bio, tagline, education) along with their `linkedin_url`.
+- **timeline_events**: A structured table for chronologically tracking user professional updates (event_type, title, description, date).
+- **audit_logs**: A strict, append-only table recording every state mutation (POST/PUT/DELETE) with `user_id`, `action`, `resource`, `ip_address`, and `timestamp`.
 
 ## 2. Intelligence Layer: Neo4j (Knowledge Graph)
 This layer stores the unstructured identity data.

@@ -33,9 +33,10 @@ Worse, **unverifiable claims** plague the industry. Anyone can write "Python" on
 
 IdentiTea is not another PDF resume generator. It is a dynamic Knowledge Graph engine powered by advanced NLP parsing and Vector Embeddings.
 
-*   **AUTOMATED INGESTION**: Drop in your PDFs and let our parsing engine automatically extract concrete skills, timelines, and measurable achievements. No manual data entry required.
+*   **AUTOMATED INGESTION**: Drop in your PDFs and let our parsing engine automatically extract concrete skills, timelines, internships, certificates, and measurable achievements. No manual data entry required.
 *   **CRYPTOGRAPHIC TRUTH**: Every extracted skill becomes a node in your graph. Edges are drawn linking that skill directly back to the exact paragraph in the source document, providing absolute truth to recruiters.
 *   **THE READINESS SCORE**: We generate vector embeddings of your entire graph and calculate cosine similarity against real job descriptions to provide an undeniable readiness score.
+*   **IDENTITY SCORE**: We computationally evaluate the depth and density of your graph to calculate a verifiable Identity Score, acting as a cryptographic seal of your professional depth.
 
 ## <picture><source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=F8F9FA&vCenter=true&width=600&lines=STRICT+BRUTALISM" /><source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=STRICT+BRUTALISM" /><img src="https://readme-typing-svg.herokuapp.com?font=Black+Ops+One&weight=400&size=32&pause=1000&color=0F0B0A&vCenter=true&width=600&lines=STRICT+BRUTALISM" alt="Strict Brutalism" /></picture>
 
@@ -43,7 +44,7 @@ We didn't build a typical dashboard. We built a premium, intelligent, calm, and 
 
 | Element | Rule |
 | :--- | :--- |
-| **COLORS** | Strict 2-color system. Background Canvas: `#f8f9fa`, Foreground Ink: `#0f0b0a`. |
+| **COLORS** | Strict 2-color monochrome system. Background Canvas: `#f8f9fa`, Foreground Ink: `#0f0b0a`. When toggling to Dark Mode, colors perfectly invert without introducing tertiary colors. Even the Knowledge Graph nodes and Logo physically swap their hex values and use CSS inversion to adhere to this rule. |
 | **TYPOGRAPHY** | Industrial, stencil-like `Black Ops One` headers mixed with modern `Geist` sans-serif body. |
 | **ARCHITECTURE** | Edge-to-Edge layout. Hard corners, solid 4px strokes, and aggressive drop shadows. No `border-radius`, no glassy blurs. |
 | **INTERACTIONS** | An inverted 100px custom cursor lens acting as a physical magnifying glass over your data. |
@@ -60,7 +61,9 @@ npm run dev
 ```
 *The landing page will be running on `http://localhost:3000`*
 
-### Backend
+### Backend & Database
+*The backend requires a Supabase PostgreSQL instance for user configurations (Timeline Events, Profiles) and a Neo4j AuraDB instance for the Knowledge Graph.*
+
 ```bash
 cd backend
 python -m venv venv

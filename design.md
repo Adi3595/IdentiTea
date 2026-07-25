@@ -4,8 +4,9 @@
 - **Philosophy**: "Do not build a typical dashboard. Build a premium AI SaaS product... intelligent, calm, minimal, futuristic and delightful."
 - **Theme**: Strict brutalist 2-color system.
 - **Colors**: 
-  - Background (White Canvas): `#f8f9fa`
-  - Foreground (Ink / Shadow): `#0f0b0a`
+  - **Light Theme**: Background Canvas (`#f8f9fa`), Foreground Ink (`#0f0b0a`)
+  - **Dark Theme**: Background Canvas (`#0f0b0a`), Foreground Ink (`#f8f9fa`)
+  - The entire UI strictly adheres to this monochrome setup without introducing any tertiary colors. Even the Knowledge Graph nodes and Logo physically invert their colors (via hex swapping and CSS invert filters) when toggling themes to enforce this absolute constraint.
 - **Typography**: 
   - Brand/Headings: `Black Ops One` (Heavy, industrial, stencil-like).
   - Body: Modern sans-serif (Geist).
