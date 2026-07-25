@@ -53,8 +53,7 @@ class PostgresService:
             return []
 
     def log_timeline_event(self, user_id: str, event_type: str, title: str, description: str, date: str):
-        if self.is_mock:
-            raise Exception("Supabase is not configured. Real database connection required.")
+        if self.is_mock: return
         try:
             data = {
                 "user_id": user_id,
@@ -63,11 +62,22 @@ class PostgresService:
                 "description": description,
                 "date": date
             }
-            response = self.client.table("timeline_events").insert(data).execute()
-            return response.data[0] if response.data else None
+            self.client.table("timeline_events").insert(data).execute()
         except Exception as e:
             logging.error(f"Error logging timeline event: {e}")
-            return None
+
+    def log_audit_event(self, user_id: str, action: str, details: dict = None):
+        if self.is_mock: return
+        try:
+            resource = str(details) if details else None
+            data = {
+                "user_id": user_id,
+                "action": action,
+                "resource": resource
+            }
+            self.client.table("audit_logs").insert(data).execute()
+        except Exception as e:
+            logging.error(f"Error logging audit event: {e}")
 
     def log_audit(self, user_id: str, action: str, resource: str, ip_address: str):
         if self.is_mock:
