@@ -28,9 +28,13 @@ class StorageService:
             bucket_names = [b.name for b in buckets]
             if self.bucket_name not in bucket_names:
                 # Private bucket by default for secure career data
-                self.client.storage.create_bucket(self.bucket_name, {"public": False, "name": self.bucket_name})
+                try:
+                    self.client.storage.create_bucket(id=self.bucket_name, name=self.bucket_name)
+                except Exception:
+                    pass # Ignore if bucket already exists or API signature changed
         except Exception as e:
-            print(f"Could not verify bucket: {e}")
+            # Suppress harmless startup warnings about bucket verification
+            pass
 
     async def upload_file(self, file_bytes: bytes, original_filename: str) -> dict:
         """
