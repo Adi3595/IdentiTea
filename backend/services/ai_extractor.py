@@ -36,7 +36,14 @@ class AIExtractorService:
                 confidence_score=0.90
             )
 
-        # Real Gemini API implementation
+        # List of models to try in case of rate limits or missing models
+        fallback_models = [
+            "gemini-1.5-flash",
+            "gemini-1.5-pro", 
+            "gemini-2.0-flash",
+            "gemini-2.0-pro-exp"
+        ]
+        
         prompt = f"""
         You are an advanced NLP Parsing Engine for an AI Knowledge Graph.
         Your job is to read the following text extracted from a document ({filename}) and extract concrete skills, technologies, and metadata.
@@ -62,24 +69,30 @@ class AIExtractorService:
         {text_content}
         \"\"\"
         """
-        try:
-            # Using the highly capable Gemini 1.5 Flash model available in your project
-            response = await self.model.generate_content_async(
-                prompt,
-                generation_config=genai.GenerationConfig(
-                    response_mime_type="application/json",
-                    temperature=0.1 # Low temperature for factual extraction
+        
+        last_error = None
+        for model_name in fallback_models:
+            try:
+                print(f"Attempting extraction with model: {model_name}...")
+                model = genai.GenerativeModel(model_name)
+                response = await model.generate_content_async(
+                    prompt,
+                    generation_config=genai.GenerationConfig(
+                        response_mime_type="application/json",
+                        temperature=0.1
+                    )
                 )
-            )
-            
-            # Parse the JSON string into our Pydantic model
-            raw_json = response.text
-            parsed_data = json.loads(raw_json)
-            
-            return DocumentMetadata(**parsed_data)
-            
-        except Exception as e:
-            print(f"Error during AI Extraction: {e}")
-            raise ValueError(f"Failed to extract metadata via AI: {str(e)}")
+                
+                parsed_data = json.loads(response.text)
+                print(f"Successfully extracted data using {model_name}")
+                return DocumentMetadata(**parsed_data)
+                
+            except Exception as e:
+                print(f"Model {model_name} failed: {str(e)}. Switching to next model...")
+                last_error = str(e)
+                continue
+                
+        # If all models fail
+        raise ValueError(f"All fallback models failed. Last error: {last_error}")
 
 ai_extractor_service = AIExtractorService()
