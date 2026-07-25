@@ -2,7 +2,8 @@ import httpx
 import re
 import json
 import logging
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from core.config import settings
 from services.graph import graph_service
 
@@ -10,10 +11,10 @@ class LinkedinService:
     def __init__(self):
         self.api_key = settings.GEMINI_API_KEY
         if self.api_key:
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-3.5-flash')
+            self.client = genai.Client(api_key=self.api_key)
+            self.model_name = 'gemini-2.0-flash'
         else:
-            self.model = None
+            self.client = None
 
     async def scrape_and_sync(self, url: str, user_id: str) -> dict:
         """
@@ -41,7 +42,7 @@ class LinkedinService:
             # Truncate text to avoid blowing up token limits, usually profile info is in the first half
             text = text[:15000]
 
-            if self.model:
+            if self.client:
                 prompt = f"""
                 You are a data extraction AI. Read the following text extracted from a LinkedIn profile URL: {url}
                 
@@ -57,9 +58,10 @@ class LinkedinService:
                 }}
                 """
                 
-                ai_response = self.model.generate_content(
-                    prompt,
-                    generation_config=genai.GenerationConfig(
+                ai_response = await self.client.aio.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
                         response_mime_type="application/json"
                     )
                 )

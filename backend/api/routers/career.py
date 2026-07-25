@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from core.auth import get_current_user
 from services.graph import graph_service
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from core.config import settings
 import json
 import logging
@@ -9,8 +10,7 @@ import logging
 router = APIRouter()
 
 # Initialize Gemini
-genai.configure(api_key=settings.GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-3.5-flash')
+client = genai.Client(api_key=settings.GEMINI_API_KEY) if settings.GEMINI_API_KEY else None
 
 @router.post("/suggest")
 async def get_career_suggestions(
@@ -61,7 +61,14 @@ async def get_career_suggestions(
         DO NOT include markdown formatting like ```json in the output, just the raw JSON object.
         """
         
-        response = model.generate_content(prompt)
+        response = await client.aio.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="text/plain",
+                temperature=0.7
+            )
+        )
         text = response.text.strip()
         if text.startswith("```json"):
             text = text[7:-3].strip()

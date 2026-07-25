@@ -2,7 +2,8 @@ from services.graph import graph_service
 from services.postgres import db
 import logging
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from core.config import settings
 
 class IdentityEngine:
@@ -10,8 +11,8 @@ class IdentityEngine:
         self.api_key = settings.GEMINI_API_KEY
         self.is_mock = not bool(self.api_key)
         if not self.is_mock:
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel("gemini-3.5-flash")
+            self.client = genai.Client(api_key=self.api_key)
+            self.model_name = "gemini-2.0-flash"
 
     async def calculate_identity_score(self, user_id: str) -> dict:
         """
@@ -82,9 +83,10 @@ class IdentityEngine:
         ]
         """
         try:
-            response = await self.model.generate_content_async(
-                prompt,
-                generation_config=genai.GenerationConfig(
+            response = await self.client.aio.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.7
                 )
@@ -169,9 +171,10 @@ class IdentityEngine:
         """
         
         try:
-            response = await self.model.generate_content_async(
-                prompt,
-                generation_config=genai.GenerationConfig(
+            response = await self.client.aio.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.2
                 )
