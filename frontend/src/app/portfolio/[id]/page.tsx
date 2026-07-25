@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { ShieldCheck, Network, Award, AppWindow, Loader2, Share2, Copy, Linkedin, UserCircle, GraduationCap, Briefcase } from "lucide-react"
+import { ShieldCheck, Network, Award, AppWindow, Loader2, Share2, Copy, ExternalLink, UserCircle, GraduationCap, Briefcase } from "lucide-react"
 import { useParams } from "next/navigation"
 
 export default function PublicPortfolioPage() {
@@ -96,7 +96,7 @@ export default function PublicPortfolioPage() {
                 rel="noreferrer"
                 className="flex items-center gap-2 bg-transparent border-2 border-foreground/30 px-6 py-3 font-bold uppercase tracking-widest text-sm hover:border-foreground transition-colors backdrop-blur-sm"
               >
-                <Linkedin className="h-4 w-4" /> Connect
+                <ExternalLink className="h-4 w-4" /> Connect
               </a>
             )}
           </div>
