@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { ShieldCheck, Network, Award, AppWindow, Loader2, Share2, Copy } from "lucide-react"
+import { ShieldCheck, Network, Award, AppWindow, Loader2, Share2, Copy, Linkedin, UserCircle, GraduationCap, Briefcase } from "lucide-react"
 import { useParams } from "next/navigation"
 
 export default function PublicPortfolioPage() {
@@ -38,8 +38,8 @@ export default function PublicPortfolioPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center font-mono uppercase tracking-widest animate-pulse">
-      <Network className="h-12 w-12 mb-4 animate-spin-slow" />
-      Synthesizing Portfolio Matrix...
+      <Network className="h-12 w-12 mb-4 animate-spin-slow text-primary" />
+      Synthesizing Vault...
     </div>
   )
 
@@ -49,108 +49,173 @@ export default function PublicPortfolioPage() {
     </div>
   )
 
+  const profile = portfolio.profile || {}
+  const name = profile.name || "Agent Zero"
+  const tagline = profile.tagline || portfolio.tagline || "Dynamic Knowledge Worker"
+
   return (
-    <div className="min-h-screen bg-background text-foreground p-8 md:p-16 selection:bg-foreground selection:text-background relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,var(--foreground)_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03] pointer-events-none" />
+    <div className="min-h-screen bg-background text-foreground selection:bg-foreground selection:text-background relative overflow-x-hidden font-mono">
       
-      <div className="max-w-4xl mx-auto space-y-12 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      {/* Dynamic Glowing Mesh Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/20 rounded-full blur-[120px] animate-pulse mix-blend-screen" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/20 rounded-full blur-[120px] animate-pulse mix-blend-screen" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] bg-foreground/5 rounded-full blur-[100px] mix-blend-screen" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      </div>
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-24 space-y-24">
         
-        {/* Header */}
-        <header className="border-b-4 border-foreground pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="bg-foreground text-background text-xs font-bold px-3 py-1 uppercase tracking-widest font-mono">
-                Verified Cryptographic Identity
-              </span>
-              <ShieldCheck className="h-5 w-5 text-green-500" />
-            </div>
-            <h1 className="font-[family-name:var(--font-black-ops)] text-5xl md:text-7xl uppercase tracking-tighter">
-              {portfolio.seo_meta?.title?.split(" | ")[0] || "Agent Zero"}
-            </h1>
-            <p className="text-xl font-bold uppercase tracking-widest mt-2">{portfolio.tagline}</p>
+        {/* HERO SECTION */}
+        <header className="animate-in fade-in slide-in-from-bottom-8 duration-1000 space-y-8">
+          <div className="inline-flex items-center gap-2 bg-foreground/10 backdrop-blur-md border border-foreground/20 px-4 py-2 rounded-full">
+            <ShieldCheck className="h-4 w-4 text-green-400" />
+            <span className="text-xs font-bold uppercase tracking-widest">Verified Identity</span>
           </div>
           
-          <button 
-            onClick={copyLink}
-            className="group flex items-center gap-2 border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors font-mono text-sm font-bold uppercase tracking-widest"
-          >
-            {copied ? <Copy className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-            {copied ? "Copied!" : "Share Profile"}
-          </button>
+          <div className="space-y-4">
+            <h1 className="font-[family-name:var(--font-black-ops)] text-5xl md:text-8xl uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50">
+              {name}
+            </h1>
+            <p className="text-xl md:text-3xl font-bold uppercase tracking-widest text-muted-foreground">{tagline}</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 pt-4">
+            <button 
+              onClick={copyLink}
+              className="flex items-center gap-2 bg-foreground text-background px-6 py-3 font-bold uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+            >
+              {copied ? <Copy className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+              {copied ? "Copied!" : "Share Profile"}
+            </button>
+            
+            {profile.linkedin_url && (
+              <a 
+                href={profile.linkedin_url} 
+                target="_blank" 
+                rel="noreferrer"
+                className="flex items-center gap-2 bg-transparent border-2 border-foreground/30 px-6 py-3 font-bold uppercase tracking-widest text-sm hover:border-foreground transition-colors backdrop-blur-sm"
+              >
+                <Linkedin className="h-4 w-4" /> Connect
+              </a>
+            )}
+          </div>
         </header>
 
-        {/* Core Skills */}
-        <section className="bg-foreground text-background shadow-[12px_12px_0_rgba(100,100,100,0.2)] p-8">
-          <div className="flex items-center gap-4 mb-6 border-b-2 border-background/20 pb-4">
-            <Network className="h-8 w-8" />
-            <h2 className="font-[family-name:var(--font-black-ops)] text-3xl uppercase tracking-tighter">Core Competencies</h2>
+        {/* ABOUT & EDUCATION */}
+        {(profile.bio || profile.education) && (
+          <section className="grid md:grid-cols-2 gap-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200 fill-mode-both">
+            {profile.bio && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4">
+                  <UserCircle className="h-6 w-6" />
+                  <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter">About</h2>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                  {profile.bio}
+                </p>
+              </div>
+            )}
+            
+            {profile.education && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4">
+                  <GraduationCap className="h-6 w-6" />
+                  <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter">Education</h2>
+                </div>
+                <div className="bg-foreground/5 border border-foreground/10 p-6 backdrop-blur-sm rounded-lg">
+                  <p className="font-bold uppercase tracking-widest">{profile.education}</p>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* CORE SKILLS */}
+        <section className="animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both">
+          <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4 mb-8">
+            <Network className="h-6 w-6" />
+            <h2 className="font-[family-name:var(--font-black-ops)] text-2xl md:text-4xl uppercase tracking-tighter">Core Competencies</h2>
           </div>
           
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-3">
             {portfolio.core_skills?.map((skill: any, i: number) => (
-              <div key={i} className="bg-background text-foreground px-4 py-2 font-bold uppercase tracking-widest border border-background shadow-[2px_2px_0_var(--background)]">
-                {skill.name || skill.label}
+              <div 
+                key={i} 
+                className="group relative bg-background/50 backdrop-blur-md border border-foreground/20 px-4 py-2 hover:border-foreground transition-all hover:-translate-y-1 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                <span className="font-bold uppercase tracking-widest text-sm relative z-10">
+                  {skill.name || skill.label}
+                </span>
               </div>
             ))}
             {!portfolio.core_skills?.length && (
-              <p className="font-mono text-background/50">No extracted skills available.</p>
+              <p className="text-muted-foreground text-sm uppercase tracking-widest">Analyzing vectors... No skills published yet.</p>
             )}
           </div>
         </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Projects */}
-          <section className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8">
-            <div className="flex items-center gap-3 mb-6 border-b-2 border-foreground pb-4">
-              <AppWindow className="h-6 w-6" />
-              <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter">Featured Projects</h2>
-            </div>
-            
-            <div className="space-y-6">
-              {portfolio.highlight_projects?.map((proj: any, i: number) => (
-                <div key={i} className="group border-l-4 border-foreground pl-4 hover:pl-6 transition-all">
-                  <h3 className="font-bold uppercase tracking-widest text-lg">{proj.name || proj.label || "Untitled Project"}</h3>
-                  <p className="font-mono text-xs text-muted-foreground mt-2 line-clamp-2">
-                    {proj.description || "Self-reported project extracted from uploaded documents."}
-                  </p>
+        {/* HIGHLIGHTED PROJECTS */}
+        <section className="animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500 fill-mode-both">
+          <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4 mb-8">
+            <AppWindow className="h-6 w-6" />
+            <h2 className="font-[family-name:var(--font-black-ops)] text-2xl md:text-4xl uppercase tracking-tighter">Highlighted Projects</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {portfolio.highlight_projects?.map((project: any, i: number) => (
+              <div 
+                key={i} 
+                className="group relative bg-background/40 backdrop-blur-lg border border-foreground/20 p-6 hover:border-foreground hover:bg-foreground/5 transition-all hover:-translate-y-2 flex flex-col justify-between min-h-[200px]"
+              >
+                <div>
+                  <h3 className="font-[family-name:var(--font-black-ops)] text-xl uppercase tracking-tighter mb-3">
+                    {project.name || project.label}
+                  </h3>
+                  {project.description && (
+                    <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-3">
+                      {project.description}
+                    </p>
+                  )}
                 </div>
-              ))}
-              {!portfolio.highlight_projects?.length && (
-                <p className="font-mono text-muted-foreground">No projects extracted.</p>
-              )}
-            </div>
-          </section>
+                <div className="text-xs font-bold uppercase tracking-widest text-foreground/50 group-hover:text-foreground transition-colors flex items-center gap-2">
+                  <Briefcase className="h-3 w-3" /> Proof of Work
+                </div>
+              </div>
+            ))}
+            {!portfolio.highlight_projects?.length && (
+              <div className="col-span-full border border-dashed border-foreground/20 p-12 text-center text-muted-foreground text-sm uppercase tracking-widest backdrop-blur-sm">
+                No projects verified in graph yet.
+              </div>
+            )}
+          </div>
+        </section>
 
-          {/* Certifications */}
-          <section className="bg-background border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] p-8">
-            <div className="flex items-center gap-3 mb-6 border-b-2 border-foreground pb-4">
+        {/* CERTIFICATIONS */}
+        {portfolio.certifications?.length > 0 && (
+          <section className="animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700 fill-mode-both pb-24">
+            <div className="flex items-center gap-3 border-b-2 border-foreground/20 pb-4 mb-8">
               <Award className="h-6 w-6" />
-              <h2 className="font-[family-name:var(--font-black-ops)] text-2xl uppercase tracking-tighter">Certifications</h2>
+              <h2 className="font-[family-name:var(--font-black-ops)] text-2xl md:text-4xl uppercase tracking-tighter">Certifications & Awards</h2>
             </div>
             
-            <div className="space-y-6">
-              {portfolio.certifications?.map((cert: any, i: number) => (
-                <div key={i} className="group border-l-4 border-foreground pl-4 hover:pl-6 transition-all">
-                  <h3 className="font-bold uppercase tracking-widest text-lg">{cert.name || cert.label || "Certificate"}</h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    <ShieldCheck className="h-4 w-4 text-green-600" />
-                    <span className="font-mono text-xs text-muted-foreground">Extracted Evidence</span>
+            <div className="space-y-4">
+              {portfolio.certifications.map((cert: any, i: number) => (
+                <div key={i} className="flex items-center gap-4 bg-background/30 backdrop-blur-sm border border-foreground/10 p-4 hover:bg-foreground/5 hover:border-foreground/30 transition-all">
+                  <div className="h-10 w-10 bg-foreground/10 rounded flex items-center justify-center shrink-0">
+                    <Award className="h-5 w-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold uppercase tracking-widest text-sm">{cert.name || cert.label}</h3>
+                    <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Verified Credential</p>
                   </div>
                 </div>
               ))}
-              {!portfolio.certifications?.length && (
-                <p className="font-mono text-muted-foreground">No certifications extracted.</p>
-              )}
             </div>
           </section>
-        </div>
+        )}
 
-        <footer className="pt-12 pb-4 text-center">
-          <p className="font-mono text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            Generated by MemoryVerse Knowledge Graph Engine
-          </p>
-        </footer>
       </div>
     </div>
   )

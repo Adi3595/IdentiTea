@@ -85,6 +85,16 @@
   animation: marquee 15s linear infinite;
 }
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-\[shimmer_1\.5s_infinite\] {
+  animation: shimmer 1.5s infinite;
+}
+
 .dark {
   --background: #212529;
   --foreground: #f8f9fa;

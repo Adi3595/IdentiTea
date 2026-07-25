@@ -103,9 +103,20 @@ class IdentityEngine:
             projects = await graph_service.get_user_projects(user_id=user_id)
             certs = await graph_service.get_user_certificates(user_id=user_id)
             
+            # Fetch custom profile data
+            settings = db.get_user_settings(user_id) or {}
+            profile = settings.get("profile") or {}
+            linkedin_url = settings.get("linkedin_url", "")
+            
             # Formulate the portfolio view
             return {
-                "tagline": "Dynamic Knowledge Worker",
+                "profile": {
+                    "name": profile.get("name", ""),
+                    "tagline": profile.get("tagline", "Dynamic Knowledge Worker"),
+                    "bio": profile.get("bio", ""),
+                    "education": profile.get("education", ""),
+                    "linkedin_url": linkedin_url,
+                },
                 "highlight_projects": projects[:3] if projects else [],
                 "core_skills": skills[:10] if skills else [],
                 "certifications": certs if certs else [],

@@ -6,9 +6,17 @@ from services.postgres import db
 
 router = APIRouter()
 
+class UserProfile(BaseModel):
+    name: Optional[str] = None
+    tagline: Optional[str] = None
+    bio: Optional[str] = None
+    education: Optional[str] = None
+
 class UserSettings(BaseModel):
     theme: Optional[str] = None
     email_notifications: Optional[bool] = None
+    profile: Optional[UserProfile] = None
+    linkedin_url: Optional[str] = None
 
 @router.get("/settings")
 async def get_settings(current_user: dict = Depends(get_current_user)):
