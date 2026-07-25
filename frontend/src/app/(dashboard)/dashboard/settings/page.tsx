@@ -20,6 +20,8 @@ export default function SettingsPage() {
     bio: "",
     education: ""
   });
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [saveStatus, setSaveStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
@@ -43,13 +45,17 @@ export default function SettingsPage() {
       if (!uid) return;
       try {
         const data = await fetchWithAuth("/users/settings");
-        if (data && data.profile) {
-          setProfile({
-            name: data.profile.name || "",
-            tagline: data.profile.tagline || "",
-            bio: data.profile.bio || "",
-            education: data.profile.education || ""
-          });
+        if (data) {
+          if (data.profile) {
+            setProfile({
+              name: data.profile.name || "",
+              tagline: data.profile.tagline || "",
+              bio: data.profile.bio || "",
+              education: data.profile.education || ""
+            });
+          }
+          if (data.linkedin_url) setLinkedinUrl(data.linkedin_url);
+          if (data.github_url) setGithubUrl(data.github_url);
         }
       } catch (err) {
         console.error("Failed to load settings", err);
@@ -67,7 +73,11 @@ export default function SettingsPage() {
     try {
       await fetchWithAuth("/users/settings", {
         method: "POST",
-        body: JSON.stringify({ profile })
+        body: JSON.stringify({ 
+          profile,
+          linkedin_url: linkedinUrl,
+          github_url: githubUrl
+        })
       });
       setSaveStatus({ type: 'success', message: 'Profile saved successfully!' });
       setTimeout(() => setSaveStatus(null), 3000);
@@ -178,6 +188,27 @@ export default function SettingsPage() {
                     className="rounded-none border-2 border-foreground font-mono min-h-[120px]" 
                     placeholder="Write a brief professional summary..." 
                   />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t-2 border-dashed border-foreground/30">
+                  <div className="space-y-2">
+                    <label className="font-bold uppercase tracking-widest text-xs text-blue-600 dark:text-blue-400">LinkedIn Profile URL</label>
+                    <Input 
+                      value={linkedinUrl}
+                      onChange={e => setLinkedinUrl(e.target.value)}
+                      className="rounded-none border-2 border-blue-600 dark:border-blue-400 font-mono" 
+                      placeholder="https://linkedin.com/in/username" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="font-bold uppercase tracking-widest text-xs text-gray-700 dark:text-gray-300">GitHub Profile URL</label>
+                    <Input 
+                      value={githubUrl}
+                      onChange={e => setGithubUrl(e.target.value)}
+                      className="rounded-none border-2 border-gray-700 dark:border-gray-300 font-mono" 
+                      placeholder="https://github.com/username" 
+                    />
+                  </div>
                 </div>
 
                 {saveStatus && (

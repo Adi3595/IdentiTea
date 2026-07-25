@@ -18,6 +18,7 @@ class UserSettings(BaseModel):
     email_notifications: Optional[bool] = None
     profile: Optional[UserProfile] = None
     linkedin_url: Optional[str] = None
+    github_url: Optional[str] = None
 
 @router.get("/settings")
 async def get_settings(current_user: dict = Depends(get_current_user)):
