@@ -84,3 +84,26 @@ async def get_identity_score(current_user: dict = Depends(get_current_user)):
             "history": []
         }
 
+@router.get("/certificates")
+async def get_certificates(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["uid"]
+    try:
+        return db.get_certificates(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/internships")
+async def get_internships(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["uid"]
+    try:
+        return db.get_internships(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/projects")
+async def get_projects(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["uid"]
+    try:
+        return db.get_projects(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

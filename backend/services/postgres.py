@@ -17,7 +17,7 @@ class PostgresService:
 
     def get_user_settings(self, user_id: str):
         if self.is_mock:
-            return {"user_id": user_id, "theme": "system", "email_notifications": True}
+            raise Exception("Supabase is not configured. Real database connection required.")
         
         try:
             response = self.client.table("user_settings").select("*").eq("user_id", user_id).execute()
@@ -31,7 +31,7 @@ class PostgresService:
 
     def update_user_settings(self, user_id: str, settings_data: dict):
         if self.is_mock:
-            return settings_data
+            raise Exception("Supabase is not configured. Real database connection required.")
         
         try:
             settings_data["user_id"] = user_id
@@ -43,19 +43,18 @@ class PostgresService:
 
     def get_timeline_events(self, user_id: str):
         if self.is_mock:
-            return []
+            raise Exception("Supabase is not configured. Real database connection required.")
         
         try:
             response = self.client.table("timeline_events").select("*").eq("user_id", user_id).order("date", desc=True).execute()
             return response.data
         except Exception as e:
-            logging.error(f"Error fetching timeline: {e}")
+            logging.error(f"Error fetching timeline events: {e}")
             return []
 
     def log_timeline_event(self, user_id: str, event_type: str, title: str, description: str, date: str):
         if self.is_mock:
-            return {"id": "mock-event", "user_id": user_id, "title": title}
-            
+            raise Exception("Supabase is not configured. Real database connection required.")
         try:
             data = {
                 "user_id": user_id,
@@ -69,22 +68,114 @@ class PostgresService:
         except Exception as e:
             logging.error(f"Error logging timeline event: {e}")
             return None
-    def log_audit_event(self, user_id: str, action: str, details: dict = None):
+
+    def log_audit(self, user_id: str, action: str, resource: str, ip_address: str):
         if self.is_mock:
-            logging.info(f"MOCK AUDIT: User {user_id} performed {action} with details {details}")
-            return True
-            
+            raise Exception("Supabase is not configured. Real database connection required.")
+        
         try:
             data = {
                 "user_id": user_id,
                 "action": action,
-                "details": details or {}
+                "resource": resource,
+                "ip_address": ip_address
             }
-            # Requires an "audit_logs" table in Supabase
             self.client.table("audit_logs").insert(data).execute()
-            return True
         except Exception as e:
-            logging.error(f"Error logging audit event: {e}")
-            return False
+            logging.error(f"Error inserting audit log: {e}")
+
+    # ==========================================
+    # DOCUMENT INGESTION METHODS
+    # ==========================================
+
+    def insert_document(self, user_id: str, filename: str, storage_path: str, category: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            data = {
+                "user_id": user_id,
+                "filename": filename,
+                "storage_path": storage_path,
+                "category": category
+            }
+            res = self.client.table("documents").insert(data).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            logging.error(f"Error inserting document: {e}")
+            return None
+
+    def insert_certificate(self, user_id: str, title: str, issuer: str, date: str, document_id: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            data = {
+                "user_id": user_id,
+                "title": title,
+                "issuer": issuer,
+                "date": date,
+                "document_id": document_id
+            }
+            res = self.client.table("certificates").insert(data).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            logging.error(f"Error inserting certificate: {e}")
+            return None
+
+    def insert_internship(self, user_id: str, role: str, company: str, duration: str, document_id: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            data = {
+                "user_id": user_id,
+                "role": role,
+                "company": company,
+                "duration": duration,
+                "document_id": document_id
+            }
+            res = self.client.table("internships").insert(data).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            logging.error(f"Error inserting internship: {e}")
+            return None
+
+    def insert_project(self, user_id: str, name: str, description: str, technologies: list, document_id: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            data = {
+                "user_id": user_id,
+                "name": name,
+                "description": description,
+                "technologies": technologies,
+                "document_id": document_id
+            }
+            res = self.client.table("projects").insert(data).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            logging.error(f"Error inserting project: {e}")
+            return None
+
+    def get_certificates(self, user_id: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            res = self.client.table("certificates").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
+            return res.data
+        except Exception as e:
+            logging.error(f"Error fetching certificates: {e}")
+            return []
+
+    def get_internships(self, user_id: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            res = self.client.table("internships").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
+            return res.data
+        except Exception as e:
+            logging.error(f"Error fetching internships: {e}")
+            return []
+
+    def get_projects(self, user_id: str):
+        if self.is_mock: raise Exception("Supabase not configured.")
+        try:
+            res = self.client.table("projects").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
+            return res.data
+        except Exception as e:
+            logging.error(f"Error fetching projects: {e}")
+            return []
 
 db = PostgresService()

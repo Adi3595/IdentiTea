@@ -13,6 +13,8 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from services.storage import storage_service
+    await storage_service.initialize_bucket()
     # Auto-create tables on startup
     if settings.DATABASE_URL:
         try:

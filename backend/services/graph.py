@@ -28,8 +28,7 @@ class GraphService:
         Inserts a document, user, skills, and technologies into the Knowledge Graph using Cypher.
         """
         if self.is_mock:
-            print(f"[Mock] Inserting graph data for document {document_id}")
-            return
+            raise Exception("Neo4j is not configured. Real database connection required.")
             
         query = """
         // 1. Ensure User exists
@@ -95,17 +94,7 @@ class GraphService:
         Fetches up to 2 hops away from the user.
         """
         if self.is_mock:
-            return {
-                "nodes": [
-                    {"id": "user", "label": "You", "type": "person"},
-                    {"id": "python", "label": "Python", "type": "skill"},
-                    {"id": "react", "label": "React", "type": "tech"}
-                ],
-                "edges": [
-                    {"source": "user", "target": "python", "label": "HAS_SKILL"},
-                    {"source": "user", "target": "react", "label": "HAS_TECH"}
-                ]
-            }
+            raise Exception("Neo4j is not configured. Real database connection required.")
             
         query = """
         MATCH (u:User {id: $user_id})-[r1]->(n1)

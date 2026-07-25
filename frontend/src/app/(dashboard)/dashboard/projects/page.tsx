@@ -18,7 +18,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     async function loadProjects() {
       try {
-        const data = await fetchWithAuth("/graph-data/projects");
+        const data = await fetchWithAuth("/users/projects");
         setProjects(data);
       } catch (err) {
         console.error("Failed to load projects", err);
