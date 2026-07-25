@@ -28,7 +28,7 @@ class StorageService:
             bucket_names = [b.name for b in buckets]
             if self.bucket_name not in bucket_names:
                 # Private bucket by default for secure career data
-                self.client.storage.create_bucket(self.bucket_name, {"public": False})
+                self.client.storage.create_bucket(self.bucket_name, {"public": False, "name": self.bucket_name})
         except Exception as e:
             print(f"Could not verify bucket: {e}")
 
