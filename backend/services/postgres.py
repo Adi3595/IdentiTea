@@ -145,16 +145,17 @@ class PostgresService:
             logging.error(f"Error inserting internship: {e}")
             return None
 
-    def insert_project(self, user_id: str, name: str, description: str, technologies: list, document_id: str):
+    def insert_project(self, user_id: str, name: str, description: str, technologies: list, document_id: str = None):
         if self.is_mock: raise Exception("Supabase not configured.")
         try:
             data = {
                 "user_id": user_id,
                 "name": name,
                 "description": description,
-                "technologies": technologies,
-                "document_id": document_id
+                "technologies": technologies
             }
+            if document_id:
+                data["document_id"] = document_id
             res = self.client.table("projects").insert(data).execute()
             return res.data[0] if res.data else None
         except Exception as e:

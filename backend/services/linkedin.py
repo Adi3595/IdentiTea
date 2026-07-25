@@ -85,6 +85,15 @@ class LinkedinService:
                         description=exp.get("description", ""),
                         url=url
                     )
+                    
+                    # Insert to Postgres Internships (or projects) so it shows up in UI
+                    db.insert_internship(
+                        user_id=user_id,
+                        role=exp.get("title", "Experience"),
+                        company="LinkedIn",
+                        duration="Unknown",
+                        document_id=None
+                    )
                     added_projects.append(exp.get("title"))
                     
                 return {

@@ -64,6 +64,17 @@ class GithubService:
                         metadata=metadata,
                         user_id=user_id
                     )
+                    
+                    # Insert to Postgres Projects table so it shows up in UI
+                    tech_names = [t.name for t in technologies]
+                    db.insert_project(
+                        user_id=user_id,
+                        name=repo.get("name"),
+                        description=metadata.summary,
+                        technologies=tech_names,
+                        document_id=None # No physical document
+                    )
+                    
                     processed_count += 1
                 except Exception as e:
                     logging.error(f"Failed to ingest repo {repo.get('name')}: {e}")
